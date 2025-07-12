@@ -1,6 +1,7 @@
 import 'package:daily_manage_user_app/controller/auth_controller.dart';
 import 'package:daily_manage_user_app/helpers/tools_colors.dart';
 import 'package:daily_manage_user_app/providers/user_provider.dart';
+import 'package:daily_manage_user_app/screens/auth_screens/nav_screens/account/sub_menu/infomation/information_screen.dart';
 import 'package:daily_manage_user_app/widgets/dialog_confirm_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -51,7 +52,9 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                             ? AssetImage(
                           user?.sex == 'Male'
                               ? 'assets/images/avatar_boy_default.jpg'
-                              : 'assets/images/avatar_girl_default.jpg',
+                              : user?.sex == "Female"
+                          ? 'assets/images/avatar_girl_default.jpg'
+                          : 'assets/images/avt_default_2.jpg',
                         ) as ImageProvider
                             : NetworkImage(user.image),
                         fit: BoxFit.cover,
@@ -71,35 +74,46 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
+                  Container(
+                    margin: EdgeInsets.only(left: 30),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                      Row(
+                        children: [
+                          Text(
+                            (user?.fullName == null || user!.fullName.trim().isEmpty)
+                                ? 'Linh Hồn'
+                                : user.fullName,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 25,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          // SizedBox(width: 60),
+                          // Text(
+                          //   '18',
+                          //   style: TextStyle(
+                          //     color: Colors.blue,
+                          //     fontSize: 20,
+                          //     fontWeight: FontWeight.bold,
+                          //   ),
+                          // ),
+                          // Icon(Icons.male, color: Colors.blue),
+                        ],
+                      ),
                       Text(
-                        user!.fullName,
+                        user!.email,
                         style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 25,
-                          fontWeight: FontWeight.bold,
+                          color: Colors.grey,
+                          fontStyle: FontStyle.italic,
                         ),
                       ),
-                      // SizedBox(width: 60),
-                      // Text(
-                      //   '18',
-                      //   style: TextStyle(
-                      //     color: Colors.blue,
-                      //     fontSize: 20,
-                      //     fontWeight: FontWeight.bold,
-                      //   ),
-                      // ),
-                      // Icon(Icons.male, color: Colors.blue),
-                    ],
+                    ],),
                   ),
-                  Text(
-                    user.email,
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontStyle: FontStyle.italic,
-                    ),
-                  ),
+
                   SizedBox(height: 20,),
                   Container(
                     decoration: BoxDecoration(
@@ -111,46 +125,53 @@ class _AccountScreenState extends ConsumerState<AccountScreen> {
                       padding: const EdgeInsets.all(10.0),
                       child: Column(
                         children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              color: Color(0xFF328BFF).withOpacity(0.2),
-                              borderRadius: BorderRadius.all(Radius.circular(10)),
-                            ),
-                            child: Row(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: Container(
-                                    width: 40,
-                                    height: 40,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(10),
+                          InkWell(
+                            onTap: () {
+                              Navigator.push(context, MaterialPageRoute(builder: (context) {
+                                return InformationScreen();
+                              },));
+                            }
+                            ,child: Container(
+                              decoration: BoxDecoration(
+                                color: Color(0xFF328BFF).withOpacity(0.2),
+                                borderRadius: BorderRadius.all(Radius.circular(10)),
+                              ),
+                              child: Row(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: Container(
+                                      width: 40,
+                                      height: 40,
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(10),
+                                        ),
+                                      ),
+                                      child: Icon(
+                                        CupertinoIcons.person_crop_circle,
+                                        color: HelpersColors.itemPrimary,
                                       ),
                                     ),
-                                    child: Icon(
-                                      CupertinoIcons.person_crop_circle,
+                                  ),
+                                  SizedBox(width: 10),
+                                  Text(
+                                    'Information',
+                                    style: TextStyle(
                                       color: HelpersColors.itemPrimary,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16
                                     ),
                                   ),
-                                ),
-                                SizedBox(width: 10),
-                                Text(
-                                  'Information',
-                                  style: TextStyle(
+                                  Spacer(),
+                                  Icon(
+                                    Icons.chevron_right,
                                     color: HelpersColors.itemPrimary,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 16
                                   ),
-                                ),
-                                Spacer(),
-                                Icon(
-                                  Icons.chevron_right,
-                                  color: HelpersColors.itemPrimary,
-                                ),
-                                SizedBox(width: 10),
-                              ],
+                                  SizedBox(width: 10),
+                                ],
+                              ),
                             ),
                           ),
                           SizedBox(height: 10,),

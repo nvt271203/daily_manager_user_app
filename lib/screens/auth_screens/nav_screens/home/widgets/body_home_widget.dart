@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:daily_manage_user_app/controller/work_controller.dart';
 import 'package:daily_manage_user_app/screens/auth_screens/nav_screens/home/widgets/confirm_check_in_widget.dart';
+import 'package:daily_manage_user_app/screens/auth_screens/nav_screens/home/widgets/weekly_overview_widget.dart';
 import 'package:daily_manage_user_app/widgets/dialog_confirm_widget.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:daily_manage_user_app/helpers/tools_colors.dart';
@@ -153,86 +154,101 @@ class _BodyHomeWidgetState extends ConsumerState<BodyHomeWidget>
     return SafeArea(
       child: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12),
-            child:
+          // Padding(
+          //   padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12),
+          //   child:
+          //
+          //   Container(
+          //     decoration: BoxDecoration(
+          //       // color: const Color(0xFFE0F2FE), // 🌿 Nền xanh nhạt
+          //       borderRadius: BorderRadius.circular(20), // 🌟 Bo góc
+          //       gradient: LinearGradient(colors: [
+          //         Color(0xFFE0F2FE), Colors.white
+          //       ]),
+          //       boxShadow: [
+          //         BoxShadow(
+          //           color: Colors.black12.withOpacity(0.1), // 🌫 Bóng nhẹ
+          //           blurRadius: 6,
+          //           offset: const Offset(0, 3),
+          //         ),
+          //       ],
+          //     ),
+          //     padding: const EdgeInsets.all(16),
+          //     child: Row(
+          //       crossAxisAlignment: CrossAxisAlignment.center,
+          //       children: [
+          //         // 🔹 Phần chữ bên trái
+          //         Expanded(
+          //           flex: 3,
+          //           child: Column(
+          //             crossAxisAlignment: CrossAxisAlignment.start,
+          //             children: [
+          //               Text(
+          //                 'Hello,',
+          //                 style: GoogleFonts.oswald(
+          //                   textStyle: TextStyle(
+          //                     fontSize: 18,
+          //                     fontWeight: FontWeight.w700,
+          //                     color: Colors.grey.shade800.withOpacity(0.8),
+          //                   ),
+          //                 ),
+          //               ),
+          //               Text(
+          //                 (user?.fullName == null || user!.fullName.trim().isEmpty) ?
+          //                     'New user'
+          //                 :
+          //                 user.fullName,
+          //                 style: GoogleFonts.oswald(
+          //                   textStyle: TextStyle(
+          //                     fontSize: 22,
+          //                     fontWeight: FontWeight.w900,
+          //                     color: HelpersColors.primaryColor,
+          //                     letterSpacing: 1.5,
+          //                   ),
+          //                 ),
+          //               ),
+          //               const SizedBox(height: 6),
+          //               Text(
+          //                 'A fresh start, a new chance!',
+          //                 style: TextStyle(
+          //                   fontSize: 14,
+          //                   color: Colors.grey.shade600,
+          //                 ),
+          //               ),
+          //             ],
+          //           ),
+          //         ),
+          //
+          //         const SizedBox(width: 16),
+          //
+          //         // 🔹 Ảnh minh họa bên phải
+          //         ClipRRect(
+          //           borderRadius: BorderRadius.circular(100),
+          //           child: user?.image == null || user!.image.isEmpty
+          //               ? Image.asset(
+          //             user?.sex == 'Male'
+          //                 ? 'assets/images/avatar_boy_default.jpg'
+          //                 : user?.sex == 'Female'
+          //                 ? 'assets/images/avatar_girl_default.jpg'
+          //                 : 'assets/images/avt_default_2.jpg',
+          //             width: 100,
+          //             height: 100,
+          //             fit: BoxFit.cover,
+          //           )
+          //               : Image.network(
+          //             user.image,
+          //             width: 100,
+          //             height: 100,
+          //             fit: BoxFit.cover,
+          //           ),
+          //         ),
+          //
+          //       ],
+          //     ),
+          //   ),
+          // ),
 
-            Container(
-              decoration: BoxDecoration(
-                // color: const Color(0xFFE0F2FE), // 🌿 Nền xanh nhạt
-                borderRadius: BorderRadius.circular(20), // 🌟 Bo góc
-                gradient: LinearGradient(colors: [
-                  Color(0xFFE0F2FE), Colors.white
-                ]),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black12.withOpacity(0.1), // 🌫 Bóng nhẹ
-                    blurRadius: 6,
-                    offset: const Offset(0, 3),
-                  ),
-                ],
-              ),
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  // 🔹 Phần chữ bên trái
-                  Expanded(
-                    flex: 3,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Hello,',
-                          style: GoogleFonts.oswald(
-                            textStyle: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w700,
-                              color: Colors.grey.shade800.withOpacity(0.8),
-                            ),
-                          ),
-                        ),
-                        Text(
-                          user!.fullName,
-                          style: GoogleFonts.oswald(
-                            textStyle: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.w900,
-                              color: HelpersColors.primaryColor,
-                              letterSpacing: 1.5,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        Text(
-                          'A fresh start, a new chance!',
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.grey.shade600,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  const SizedBox(width: 16),
-
-                  // 🔹 Ảnh minh họa bên phải
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(100),
-                    child: Image.asset(
-                      'assets/images/bg_daily_1.jpg',
-                      width: 100,
-                      height: 100,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-
-
+          WeeklyOverview(),
           // WeeklyCalendarWidget(currentDate: _now),
           SizedBox(height: 20),
 

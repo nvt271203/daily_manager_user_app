@@ -71,7 +71,9 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                               ? Image.asset(
                                   user?.sex == 'Male'
                                       ? 'assets/images/avatar_boy_default.jpg'
-                                      : 'assets/images/avatar_girl_default.jpg',
+                                 : user?.sex == 'Male'
+                                      ? 'assets/images/avatar_girl_default.jpg'
+                            : 'assets/images/avt_default_2.jpg',
                                   width: 50,
                                   height: 50,
                                   fit: BoxFit.cover,
@@ -86,7 +88,9 @@ class _HistoryScreenState extends ConsumerState<HistoryScreen> {
                       const SizedBox(width: 12),
                       Expanded(
                         child: Text(
-                          user!.fullName,
+                          (user?.fullName == null || user!.fullName.trim().isEmpty)
+                              ? 'Linh Hồn'
+                              : user.fullName,
                           style: const TextStyle(
                             fontSize: 20,
                             color: Colors.white,

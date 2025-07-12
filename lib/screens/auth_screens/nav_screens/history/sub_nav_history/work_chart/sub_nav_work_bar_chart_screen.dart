@@ -174,7 +174,9 @@ class _SubNavWorkBarChartScreenState extends ConsumerState<SubNavWorkBarChartScr
                                     ? Image.asset(
                                   user?.sex == 'Male'
                                       ? 'assets/images/avatar_boy_default.jpg'
-                                      : 'assets/images/avatar_girl_default.jpg',
+                                      : user?.sex == 'Male'
+                                      ? 'assets/images/avatar_girl_default.jpg'
+                                      : 'assets/images/avt_default_2.jpg',
                                   width: 50,
                                   height: 50,
                                   fit: BoxFit.cover,
@@ -191,7 +193,9 @@ class _SubNavWorkBarChartScreenState extends ConsumerState<SubNavWorkBarChartScr
                           const SizedBox(width: 12),
                           Expanded(
                             child: Text(
-                              user!.fullName,
+                              (user?.fullName == null || user!.fullName.trim().isEmpty)
+                                  ? 'Linh Hồn'
+                                  : user.fullName,
                               style: const TextStyle(
                                 fontSize: 20,
                                 color: Colors.white,
@@ -205,7 +209,7 @@ class _SubNavWorkBarChartScreenState extends ConsumerState<SubNavWorkBarChartScr
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        user.email,
+                        user!.email,
                         style: TextStyle(color: Colors.white70, fontSize: 14),
                       ),
                     ],

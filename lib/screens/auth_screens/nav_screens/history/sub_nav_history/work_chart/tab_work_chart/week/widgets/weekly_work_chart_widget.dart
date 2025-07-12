@@ -15,6 +15,47 @@ class WeeklyWorkChartWidget extends StatelessWidget {
     final chartData = _convertToWeeklyChartData(works);
     final maxY = _getMaxY(chartData);
 
+    // Kiểm tra tổng số phút làm việc trong tuần đó, nếu ko cs thì k hiển thị bản đồ
+    final totalMinutes = chartData.fold<double>(
+      0,
+          (sum, e) => sum + (e['minutes'] as double),
+    );
+    if (totalMinutes == 0) {
+      // ✅ Giao diện khi không có dữ liệu làm việc trong tuần
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: const [
+              Icon(Icons.calendar_today, size: 64, color: Colors.blueGrey),
+              SizedBox(height: 12),
+              Text(
+                "No Work Recorded This Week",
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 8),
+              Text(
+                "Start logging your working hours to see your weekly performance here!",
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.black54,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+      );
+    }else
+
+
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -35,7 +76,7 @@ class WeeklyWorkChartWidget extends StatelessWidget {
                 // ✅ BIỂU ĐỒ
                 SizedBox(
                   // height: 240,
-                  height: 380,
+                  height: 360,
                   child: BarChart(
                     BarChartData(
                       alignment: BarChartAlignment.spaceAround,

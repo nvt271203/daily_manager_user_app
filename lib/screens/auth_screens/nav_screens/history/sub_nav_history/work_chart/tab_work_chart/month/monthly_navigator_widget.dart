@@ -15,106 +15,152 @@ class MonthlyNavigatorWidget extends ConsumerStatefulWidget {
 }
 
 class _MonthlyNavigatorWidgetState extends ConsumerState<MonthlyNavigatorWidget> {
-  late int selectedMonth;
-  late int selectedYear;
+  int currentYear = DateTime.now().year;
+  int currentMonth = DateTime.now().month;
 
   @override
   void initState() {
     super.initState();
     final now = DateTime.now();
-    selectedMonth = now.month;
-    selectedYear = now.year;
+
     Future.microtask(() => ref.read(workProvider.notifier).fetchWorks());
   }
+  void _showYearPickerDialog() {
+    int selectedYear = currentYear;
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              title: const Text(
+                'Select Year',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              content: DropdownButton<int>(
+                value: selectedYear,
+                items: List.generate(10, (index) {
+                  final year = DateTime.now().year - 5 + index;
+                  return DropdownMenuItem(
+                    value: year,
+                    child: Text(year.toString()),
+                  );
+                }),
+                onChanged: (value) {
+                  if (value != null) {
+                    setDialogState(() {
+                      selectedYear = value;
+                    });
+                  }
+                },
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('Cancel'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    setState(() {
+                      currentYear = selectedYear;
+
+                      DateTime firstDayOfYear = DateTime(currentYear, 1, 1);
+                      // currentWeekStartDate = _getStartOfWeek(firstDayOfYear);
+                      // _selectedDate = currentWeekStartDate;
+                    });
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
+
+
+
+
+
+
+
 
   void _goToPreviousMonth() {
     setState(() {
-      if (selectedMonth == 1) {
-        selectedMonth = 12;
-        selectedYear--;
+      if (currentMonth == 1) {
+        currentMonth = 12;
+        currentYear--;
       } else {
-        selectedMonth--;
+        currentMonth--;
       }
     });
   }
 
   void _goToNextMonth() {
     setState(() {
-      if (selectedMonth == 12) {
-        selectedMonth = 1;
-        selectedYear++;
-      } else {
-        selectedMonth++;
+      if(currentMonth == 12){
+        currentMonth = 1;
+        currentYear++;
+      }else{
+        currentMonth++;
       }
     });
   }
 
-  void _showMonthPicker() async {
-    final now = DateTime.now();
+  void _showMonthPicker() {
+    int tempMonth = currentMonth;
+
     showDialog(
       context: context,
       builder: (context) {
-        int tempMonth = selectedMonth;
-        int tempYear = selectedYear;
-
-        return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-          title: const Text('Chọn tháng và năm'),
-          content: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              DropdownButton<int>(
-                value: tempMonth,
+        return StatefulBuilder(
+          builder: (context, setDialogState) {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              title: const Text('Select Month'),
+              content: DropdownButton<int>(
+                value: currentMonth,
                 items: List.generate(12, (index) {
                   return DropdownMenuItem(
                     value: index + 1,
-                    child: Text('Tháng ${index + 1}'),
+                    child: Text('Month ${index + 1}'),
                   );
                 }),
                 onChanged: (value) {
                   if (value != null) {
-                    setState(() => tempMonth = value);
+                    setDialogState(() {
+                      tempMonth = value;
+                    });
                   }
                 },
               ),
-              const SizedBox(width: 20),
-              DropdownButton<int>(
-                value: tempYear,
-                items: List.generate(10, (index) {
-                  final year = now.year - 5 + index;
-                  return DropdownMenuItem(
-                    value: year,
-                    child: Text('$year'),
-                  );
-                }),
-                onChanged: (value) {
-                  if (value != null) {
-                    setState(() => tempYear = value);
-                  }
-                },
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Hủy'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  selectedMonth = tempMonth;
-                  selectedYear = tempYear;
-                });
-                Navigator.pop(context);
-              },
-              child: const Text('OK'),
-            ),
-          ],
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('Hủy'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      currentMonth = tempMonth;
+                    });
+                    Navigator.pop(context);
+                  },
+                  child: const Text('OK'),
+                ),
+              ],
+            );
+          },
         );
       },
     );
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -124,7 +170,7 @@ class _MonthlyNavigatorWidgetState extends ConsumerState<MonthlyNavigatorWidget>
       data: (allWorks) {
         final filtered = allWorks.where((w) {
           final d = w.checkInTime.toLocal();
-          return d.month == selectedMonth && d.year == selectedYear;
+          return d.month == currentMonth && d.year == currentYear;
         }).toList();
 
         return Scaffold(
@@ -137,8 +183,8 @@ class _MonthlyNavigatorWidgetState extends ConsumerState<MonthlyNavigatorWidget>
                 Expanded(
                   child: MonthlyWorkChartWidget(
                     works: filtered,
-                    year: selectedYear,
-                    month: selectedMonth,
+                    year: currentYear,
+                    month: currentMonth,
                   ),
                 ),
               ],
@@ -152,26 +198,69 @@ class _MonthlyNavigatorWidgetState extends ConsumerState<MonthlyNavigatorWidget>
   }
 
   Widget _buildHeader() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Column(
       children: [
-        IconButton(
-          icon: const Icon(Icons.chevron_left),
-          onPressed: _goToPreviousMonth,
-        ),
         InkWell(
-          onTap: _showMonthPicker,
-          child: Column(
-            children: [
-              const Text('Tháng', style: TextStyle(fontWeight: FontWeight.bold)),
-              Text("${selectedMonth.toString().padLeft(2, '0')} / $selectedYear",
-                  style: const TextStyle(fontWeight: FontWeight.bold)),
-            ],
+          onTap: _showYearPickerDialog,
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            decoration: BoxDecoration(
+              color: HelpersColors.bgFillTextField,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.date_range, color: HelpersColors.itemPrimary),
+                SizedBox(width: 8),
+                Text('Year $currentYear',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: HelpersColors.itemPrimary,
+                    )),
+                SizedBox(width: 16),
+                Icon(Icons.keyboard_arrow_down,color: HelpersColors.itemPrimary,)
+              ],
+            ),
           ),
         ),
-        IconButton(
-          icon: const Icon(Icons.chevron_right),
-          onPressed: _goToNextMonth,
+        SizedBox(height: 10,),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                color: HelpersColors.bgFillTextField,
+                borderRadius: BorderRadius.all(Radius.circular(50)),
+              ),
+              child: IconButton(
+                onPressed: _goToPreviousMonth,
+                icon: Icon(Icons.chevron_left, color: HelpersColors.itemPrimary),
+              ),
+            ),
+            SizedBox(width: 20,),
+            InkWell(
+              onTap: _showMonthPicker,
+              child: Row(
+                children: [
+                  Text('Month ${currentMonth}', style: TextStyle(fontWeight: FontWeight.bold)),
+                 Icon(Icons.keyboard_arrow_down)
+                ],
+              ),
+            ),
+            SizedBox(width: 20,),
+
+            Container(
+              decoration: BoxDecoration(
+                color: HelpersColors.bgFillTextField,
+                borderRadius: BorderRadius.all(Radius.circular(50)),
+              ),
+              child: IconButton(
+                onPressed: _goToNextMonth,
+                icon: Icon(Icons.chevron_right, color: HelpersColors.itemPrimary),
+              ),
+            ),
+          ],
         ),
       ],
     );

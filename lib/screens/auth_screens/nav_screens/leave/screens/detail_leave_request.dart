@@ -5,6 +5,7 @@ import '../../../../../models/leave.dart';
 
 class DetailLeaveRequest extends StatelessWidget {
   final Leave leave;
+
   const DetailLeaveRequest({super.key, required this.leave});
 
   Color getStatusColor(String status) {
@@ -17,6 +18,7 @@ class DetailLeaveRequest extends StatelessWidget {
         return Colors.orange;
     }
   }
+
   Color getStatusBackgroundColor(String status) {
     switch (status) {
       case 'Approved':
@@ -57,7 +59,9 @@ class DetailLeaveRequest extends StatelessWidget {
           // Header status card
           Card(
             color: getStatusBackgroundColor(leave.status), // 👉 thêm dòng này
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
             elevation: 3,
             child: ListTile(
               contentPadding: const EdgeInsets.all(20),
@@ -82,7 +86,6 @@ class DetailLeaveRequest extends StatelessWidget {
             ),
           ),
 
-
           const SizedBox(height: 16),
 
           _buildInfoCard(
@@ -99,13 +102,14 @@ class DetailLeaveRequest extends StatelessWidget {
             icon: Icons.today,
             title: 'Start Date',
             content:
-            '${FormatHelper.formatDate_DD_MM_YYYY(leave.startDate)} (${FormatHelper.formatTimeHH_MM(leave.startDate)})',
+                // '${FormatHelper.formatDate_DD_MM_YYYY(leave.startDate)} (${FormatHelper.formatTimeHH_MM(leave.startDate)})',
+                '${FormatHelper.formatTimeHH_MM(leave.startDate)} - ${FormatHelper.formatDate_DD_MM_YYYY(leave.startDate)}',
           ),
           _buildInfoCard(
             icon: Icons.event_available,
             title: 'End Date',
             content:
-            '${FormatHelper.formatDate_DD_MM_YYYY(leave.endDate)} (${FormatHelper.formatTimeHH_MM(leave.endDate)})',
+                '${FormatHelper.formatTimeHH_MM(leave.endDate)} - ${FormatHelper.formatDate_DD_MM_YYYY(leave.endDate)}',
           ),
           _buildInfoCard(
             icon: Icons.note_alt,
@@ -131,21 +135,20 @@ class DetailLeaveRequest extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(16), // giảm padding cho gọn
         child: Row(
-          crossAxisAlignment:
-          isMultiline ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+          crossAxisAlignment: isMultiline
+              ? CrossAxisAlignment.start
+              : CrossAxisAlignment.center,
           children: [
             Container(
               width: 40,
               height: 40,
               decoration: BoxDecoration(
                 color: HelpersColors.primaryColor.withOpacity(0.1),
-                borderRadius: BorderRadius.circular(12), // hoặc 20 nếu muốn tròn hơn
+                borderRadius: BorderRadius.circular(
+                  12,
+                ), // hoặc 20 nếu muốn tròn hơn
               ),
-              child: Icon(
-                icon,
-                size: 22,
-                color: HelpersColors.primaryColor,
-              ),
+              child: Icon(icon, size: 22, color: HelpersColors.primaryColor),
             ),
             const SizedBox(width: 14),
             Expanded(
@@ -172,12 +175,10 @@ class DetailLeaveRequest extends StatelessWidget {
                   ),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),
     );
   }
-
-
 }

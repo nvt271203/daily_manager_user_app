@@ -31,6 +31,11 @@ class FormatHelper {
     String twoDigits(int n) => n.toString().padLeft(2, '0');
     return '${twoDigits(d.inHours)}:${twoDigits(d.inMinutes % 60)}:${twoDigits(d.inSeconds % 60)}';
   }
+  //Format thời gian (giờ:phút):
+  static String formatDurationHH_MM(Duration d) {
+    String twoDigits(int n) => n.toString().padLeft(2, '0');
+    return '${twoDigits(d.inHours)}:${twoDigits(d.inMinutes % 60)}';
+  }
 
 
 }

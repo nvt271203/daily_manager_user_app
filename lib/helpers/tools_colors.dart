@@ -20,6 +20,8 @@ class HelpersColors {
   static Color bg_app_primary = Color(0xFFFFFFFF);
   static Color bg_app_secondrady = Color(0xFF28B4FF);
 
+  static Color itemPrimary_admin = Color(0xFF008489);
+
   static Color bgFillTextField = Color(0xFFE8F2FF);
   static Color itemTextField = Color(0xFF62A2F7);
   //-------------Hồng cam

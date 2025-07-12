@@ -20,7 +20,7 @@ class _WorkChartContentState extends State<WorkChartContent> {
     Icons.date_range,
   ];
 
-  final List<String> _tabs = ["By Week", "By Month", "Custom Range"];
+  final List<String> _tabs = ["Week", "Month", "Range"];
   final List<Widget> _tabContents = [
     const WeeklyNavigatorWidget(),
     const MonthlyNavigatorWidget(),
@@ -31,17 +31,43 @@ class _WorkChartContentState extends State<WorkChartContent> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const SizedBox(height: 16),
-        // Thanh điều hướng tab
+        const SizedBox(height: 10),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.bar_chart,
+                color: HelpersColors.primaryColor,
+                size: 24,
+              ),
+              const SizedBox(width: 16),
+              Text(
+                'Working Time Chart',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w900,
+                  color: HelpersColors.primaryColor,
+                  letterSpacing: 0.5,
+                ),
+              ),
+            ],
+          ),
+        ),
+
+        const SizedBox(height: 10),
+
+        // Thanh điều hướng tab
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16,),
           child: Container(
             decoration: BoxDecoration(
               color: Colors.grey[100],
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                color: HelpersColors.primaryColor, // 🎯 Màu viền
-                width: 2,                           // 🎯 Độ dày viền
+                color: HelpersColors.primaryColor,
+                width: 2,
               ),
               boxShadow: [
                 BoxShadow(
@@ -59,26 +85,18 @@ class _WorkChartContentState extends State<WorkChartContent> {
                     duration: const Duration(milliseconds: 250),
                     curve: Curves.easeInOut,
                     decoration: BoxDecoration(
-                      // gradient: LinearGradient(
-                      //   colors: isSelected
-                      //       ? [
-                      //           HelpersColors.primaryColor,
-                      //           HelpersColors.secondaryColor,
-                      //         ]
-                      //       : [Colors.transparent, Colors.transparent],
-                      // ),
                       color: isSelected
                           ? HelpersColors.primaryColor
                           : Colors.transparent,
                       borderRadius: BorderRadius.circular(16),
                       boxShadow: isSelected
                           ? [
-                              BoxShadow(
-                                color: Colors.blueAccent.withOpacity(0.3),
-                                blurRadius: 6,
-                                offset: Offset(0, 3),
-                              ),
-                            ]
+                        BoxShadow(
+                          color: Colors.blueAccent.withOpacity(0.3),
+                          blurRadius: 6,
+                          offset: Offset(0, 3),
+                        ),
+                      ]
                           : [],
                     ),
                     child: Material(
@@ -91,24 +109,23 @@ class _WorkChartContentState extends State<WorkChartContent> {
                           });
                         },
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 10),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 12,
+                            horizontal: 8,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Icon(
                                 _tabIcons[index],
-                                size: 20,
-                                color: isSelected
-                                    ? Colors.white
-                                    : Colors.black87,
+                                size: 18,
+                                color: isSelected ? Colors.white : Colors.black.withOpacity(0.7),
                               ),
-                              const SizedBox(height: 4),
+                              const SizedBox(width: 10),
                               Text(
                                 _tabs[index],
                                 style: TextStyle(
-                                  color: isSelected
-                                      ? Colors.white
-                                      : Colors.black87,
+                                  color: isSelected ? Colors.white : Colors.black.withOpacity(0.7),
                                   fontWeight: isSelected
                                       ? FontWeight.bold
                                       : FontWeight.normal,

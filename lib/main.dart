@@ -1,4 +1,8 @@
 import 'package:daily_manage_user_app/providers/user_provider.dart';
+import 'package:daily_manage_user_app/screens/common_screens/splash_screens.dart';
+import 'package:daily_manage_user_app/screens/common_screens/widgets/splash_next_screen_widget.dart';
+import 'package:daily_manage_user_app/screens/common_screens/widgets/splash_widget.dart';
+import 'package:daily_manage_user_app/screens/guest_screens/admin_register_screen.dart';
 import 'package:daily_manage_user_app/screens/guest_screens/login_screen.dart';
 import 'package:daily_manage_user_app/screens/main_screen.dart';
 import 'package:daily_manage_user_app/screens/responsive.dart';
@@ -65,18 +69,22 @@ class MyApp extends ConsumerWidget {
 
 
       ),
-      // home: MainScreen(),
-      home: FutureBuilder(future: _checkTokenAndUser(ref), builder: (context, snapshot) {
-        if(snapshot.connectionState == ConnectionState.waiting){
-          return Center(child: CircularProgressIndicator(),);
-        }
-        final user = ref.watch(userProvider);
-        // return user!= null ? LeaveScreenTemp() :LeaveScreenTemp();
-        return user!= null ? MainScreen() :LoginScreen();
-        // return user!= null ? NavigatorBottomBar() :NavigatorBottomBar();
-        // return user!= null ? Responsive() :Responsive();
-        // return user!= null ? LeaveTypeDropdown() :LeaveTypeDropdown();
-      },),
+      home: SplashScreens(),
+      // home: SplashWidget(),
+      // home: SplashNextScreenWidget(screenWidget: LoginScreen()),
+      // home: FutureBuilder(future: _checkTokenAndUser(ref), builder: (context, snapshot) {
+      //   if(snapshot.connectionState == ConnectionState.waiting){
+      //     return Center(child: CircularProgressIndicator(),);
+      //   }
+      //   final user = ref.watch(userProvider);
+      //   // return user!= null ? LeaveScreenTemp() :LeaveScreenTemp();
+      //   return user!= null ? MainScreen() :LoginScreen();
+      //   // return user!= null ? SplashScreens() :LoginScreen();
+      //   // return user!= null ? AdminRegisterScreen() :AdminRegisterScreen();
+      //   // return user!= null ? NavigatorBottomBar() :NavigatorBottomBar();
+      //   // return user!= null ? Responsive() :Responsive();
+      //   // return user!= null ? LeaveTypeDropdown() :LeaveTypeDropdown();
+      // },),
     );
   }
 }

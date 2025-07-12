@@ -32,7 +32,7 @@ class User {
     return User(
       id: json["_id"] ?? "",
       fullName: json["fullName"] ?? "",
-      birthDay: DateTime.parse(json["birthDay"]),
+      birthDay: json["birthDay"] != null ? DateTime.parse(json["birthDay"]) : null,
       sex: json["sex"] ?? "",
       email: json["email"] ?? "",
       password: json["password"] ?? "",
@@ -93,14 +93,23 @@ class User {
 
   String? emailValidate(String? value) {
     if (value == null || value.trim().isEmpty) {
-      return 'Please enter email';
+      return '"Email" cannot be blank !';
+    }
+    // Biểu thức chính quy để kiểm tra định dạng email
+    final emailRegex = RegExp(r"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$");
+
+    if (!emailRegex.hasMatch(value.trim())) {
+      return '"EMAIL" must be a valid email !';
     }
     return null;
   }
 
   String? passwordValidate(String? value) {
     if (value == null || value.trim().isEmpty) {
-      return 'Please enter password';
+      return '"Password" cannot be blank !';
+    }
+    if (value.trim().length < 6) {
+      return '"Password" must be at least 6 characters!';
     }
     return null;
   }

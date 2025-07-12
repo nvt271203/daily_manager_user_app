@@ -1,3 +1,4 @@
+import 'package:daily_manage_user_app/helpers/format_helper.dart';
 import 'package:daily_manage_user_app/helpers/tools_colors.dart';
 import 'package:daily_manage_user_app/providers/user_provider.dart';
 import 'package:daily_manage_user_app/providers/work_provider.dart';
@@ -174,7 +175,8 @@ class _TodoListTableWidgetState extends ConsumerState<TodoListTableWidget> {
                               flex: 2,
                               child: Center(
                                 child: Text(
-                                  formatDuration(duration),
+                                  // formatDuration(duration),
+                                  FormatHelper.formatDurationHH_MM(duration),
                                   style: TextStyle(
                                     color: HelpersColors.itemSelected,
                                     fontWeight: FontWeight.bold,

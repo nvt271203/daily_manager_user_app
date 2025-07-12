@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../models/leave.dart';
 import '../../../../providers/leave_provider.dart';
 import 'screens/leave_request_screen.dart';
-import 'widgets/detail_leave_request.dart';
+import 'screens/detail_leave_request.dart';
 
 class LeaveScreen extends ConsumerStatefulWidget {
   const LeaveScreen({super.key});

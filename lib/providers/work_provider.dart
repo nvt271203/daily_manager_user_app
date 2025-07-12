@@ -16,7 +16,10 @@ class WorkProvider extends StateNotifier<AsyncValue<List<Work>>> {
       try {
         final works = await WorkController().loadWorkByUser(userId: user.id);
         // state = works.reversed.toList();
-        state = AsyncValue.data(works.reversed.toList());
+        // state = AsyncValue.data(works.reversed.toList());
+        works.sort((a, b) => b.checkInTime.compareTo(a.checkInTime));
+        // Sắp xếp giảm dần
+        state = AsyncValue.data(works);
 
       } catch (e) {
         print("Error loading work list: $e");

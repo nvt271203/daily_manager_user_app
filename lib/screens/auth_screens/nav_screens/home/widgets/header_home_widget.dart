@@ -1,7 +1,10 @@
 import 'package:daily_manage_user_app/providers/user_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter/services.dart'; // nhớ import nếu chưa có
+import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+import '../../../../../helpers/tools_colors.dart'; // nhớ import nếu chưa có
 
 class HeaderHomeWidget extends ConsumerWidget {
   const HeaderHomeWidget({super.key});
@@ -26,7 +29,7 @@ class HeaderHomeWidget extends ConsumerWidget {
       child: Row(
         children: [
           Container(
-            padding: EdgeInsets.all(10),
+            padding: EdgeInsets.all(5),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.all(Radius.circular(100)),
@@ -37,9 +40,11 @@ class HeaderHomeWidget extends ConsumerWidget {
                   ? Image.asset(
                       user?.sex == 'Male'
                           ? 'assets/images/avatar_boy_default.jpg'
-                          : 'assets/images/avatar_girl_default.jpg',
-                      width: 50,
-                      height: 50,
+                          : user?.sex == 'Female'
+                          ? 'assets/images/avatar_girl_default.jpg'
+                          : 'assets/images/avt_default_2.jpg',
+                      width: 60,
+                      height: 60,
                     )
                   : Image.network(user.image, width: 50, height: 50),
             ),
@@ -50,29 +55,54 @@ class HeaderHomeWidget extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                user?.fullName ?? 'Anonymous',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
-                  letterSpacing: 1.2,
+                'Hello,',
+                style: GoogleFonts.oswald(
+                  textStyle: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white.withOpacity(0.5),
+                  ),
                 ),
               ),
-              // Text(
-              //   'Hello, ${user?.fullName ?? 'Anonymous'}',
-              //   style: TextStyle(color: Colors.white),
-              // ),
               Text(
-                '${user?.email ?? 'nva@gmail.com'}',
-                style: TextStyle(color: Colors.white.withOpacity(0.7),fontStyle: FontStyle.italic),
+                (user?.fullName == null || user!.fullName.trim().isEmpty) ?
+                'New user'
+                    :
+                user.fullName,
+                style: GoogleFonts.oswald(
+                  textStyle: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w900,
+                    // color: HelpersColors.primaryColor,
+                    color: Colors.white,
+                    letterSpacing: 1.5,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                'A fresh start, a new chance!',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.white,
+                  fontStyle: FontStyle.italic
+                ),
               ),
             ],
           ),
           Spacer(),
-          IconButton(
-            onPressed: () {},
-            icon: Icon(Icons.logout, color: Colors.white),
-          ),
+          Container(
+              height: 40,
+              width: 40,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.all(Radius.circular(40))
+              ),
+              child: Icon(Icons.notifications_active,color: HelpersColors.primaryColor,))
+          // IconButton(
+          //   onPressed: () {},
+          //   icon: Icon(Icons.logout, color: Colors.white),
+          // ),
         ],
       ),
     );

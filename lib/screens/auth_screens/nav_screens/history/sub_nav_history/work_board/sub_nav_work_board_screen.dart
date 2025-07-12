@@ -13,6 +13,7 @@ import '../../../account/account_screen.dart';
 import '../../../home/home_screen.dart';
 import '../../../leave/leave_screen.dart';
 import 'package:flutter/services.dart'; // nhớ thêm import này nếu chưa có
+
 class SubNavWorkBoardScreen extends ConsumerStatefulWidget {
   const SubNavWorkBoardScreen({super.key});
 
@@ -24,7 +25,12 @@ class _SubNavWorkBoardScreenState extends ConsumerState<SubNavWorkBoardScreen> {
   int _currentIndex = 1;
   late DateTime currentWeekStartDate;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  BottomNavigationBarItem _buildNavItem(IconData icon, String label, int index) {
+
+  BottomNavigationBarItem _buildNavItem(
+    IconData icon,
+    String label,
+    int index,
+  ) {
     bool isSelected = _currentIndex == index;
     return BottomNavigationBarItem(
       label: '',
@@ -34,16 +40,21 @@ class _SubNavWorkBoardScreenState extends ConsumerState<SubNavWorkBoardScreen> {
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
         decoration: BoxDecoration(
           // color: isSelected ? Colors.blue : Colors.transparent,
-          gradient: LinearGradient(colors: isSelected ? [
-            HelpersColors.primaryColor, HelpersColors.secondaryColor
-          ] : [Colors.transparent, Colors.transparent]),
+          gradient: LinearGradient(
+            colors: isSelected
+                ? [HelpersColors.primaryColor, HelpersColors.secondaryColor]
+                : [Colors.transparent, Colors.transparent],
+          ),
 
           borderRadius: BorderRadius.circular(8),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, color: isSelected ? Colors.white : const Color(0xFF4E709B)),
+            Icon(
+              icon,
+              color: isSelected ? Colors.white : const Color(0xFF4E709B),
+            ),
             const SizedBox(height: 4),
             Text(
               label,
@@ -56,17 +67,20 @@ class _SubNavWorkBoardScreenState extends ConsumerState<SubNavWorkBoardScreen> {
           ],
         ),
       ),
-
     );
   }
+
   List<Work> _filterWorksByWeek(List<Work> works) {
     final weekEnd = currentWeekStartDate.add(const Duration(days: 7));
     return works.where((work) {
       final date = work.checkInTime;
-      return date.isAfter(currentWeekStartDate.subtract(const Duration(seconds: 1))) &&
+      return date.isAfter(
+            currentWeekStartDate.subtract(const Duration(seconds: 1)),
+          ) &&
           date.isBefore(weekEnd);
     }).toList();
   }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -74,11 +88,14 @@ class _SubNavWorkBoardScreenState extends ConsumerState<SubNavWorkBoardScreen> {
     currentWeekStartDate = _getStartOfWeek(DateTime.now());
 
     // ✅ Đặt màu thanh trạng thái trùng với AppBar
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      statusBarColor: Colors.white, // màu AppBar
-      statusBarIconBrightness: Brightness.dark, // icon trắng
-    ));
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
+        statusBarColor: Colors.white, // màu AppBar
+        statusBarIconBrightness: Brightness.dark, // icon trắng
+      ),
+    );
   }
+
   DateTime _getStartOfWeek(DateTime date) {
     return date.subtract(Duration(days: date.weekday - 1));
   }
@@ -161,9 +178,6 @@ class _SubNavWorkBoardScreenState extends ConsumerState<SubNavWorkBoardScreen> {
     // final allWorks = ref.watch(workProvider);
     // final weekWorks = _filterWorksByWeek(testWorks);
 
-
-
-
     List<Widget> _pages = [
       HomeScreen(),
       // SubNavWorkGranttScreen(),
@@ -179,16 +193,17 @@ class _SubNavWorkBoardScreenState extends ConsumerState<SubNavWorkBoardScreen> {
       child: Scaffold(
         appBar: _currentIndex == 1
             ? PreferredSize(
-          preferredSize: const Size.fromHeight(80),
-          child: HeaderSubNavWidget(
-            title: 'Work Board',
-            icon: Icons.dashboard_customize_outlined,
-            onMenuPressed: () {
-              _scaffoldKey.currentState?.openDrawer();
-            },
-          ),
-        )
-            : null, // Các page khác không có appBar
+                preferredSize: const Size.fromHeight(80),
+                child: HeaderSubNavWidget(
+                  title: 'Work Board',
+                  icon: Icons.dashboard_customize_outlined,
+                  onMenuPressed: () {
+                    _scaffoldKey.currentState?.openDrawer();
+                  },
+                ),
+              )
+            : null,
+        // Các page khác không có appBar
         key: _scaffoldKey,
         drawer: Drawer(
           child: Container(
@@ -211,40 +226,45 @@ class _SubNavWorkBoardScreenState extends ConsumerState<SubNavWorkBoardScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(height: 50,),
+                      SizedBox(height: 50),
                       Row(
                         children: [
                           Container(
                             padding: EdgeInsets.all(10),
                             decoration: BoxDecoration(
                               color: Colors.white,
-                              borderRadius: BorderRadius.all(Radius.circular(100)),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(100),
+                              ),
                             ),
                             child: ClipRRect(
-                                borderRadius: BorderRadiusGeometry.all(Radius.circular(50)),
-                                child:
-                                user?.image == null || user!.image.isEmpty
-                                    ? Image.asset(
-                                  user?.sex == 'Male'
-                                      ? 'assets/images/avatar_boy_default.jpg'
-                                      : 'assets/images/avatar_girl_default.jpg',
-                                  width: 50,
-                                  height: 50,
-                                  fit: BoxFit.cover,
-                                )
-                                    : Image.network(
-                                  user.image,
-                                  width: 50,
-                                  height: 50,
-                                )
-      
-      
+                              borderRadius: BorderRadiusGeometry.all(
+                                Radius.circular(50),
+                              ),
+                              child: user?.image == null || user!.image.isEmpty
+                                  ? Image.asset(
+                                      user?.sex == 'Male'
+                                          ? 'assets/images/avatar_boy_default.jpg'
+                                          : user?.sex == 'Male'
+                                          ? 'assets/images/avatar_girl_default.jpg'
+                                          : 'assets/images/avt_default_2.jpg',
+                                      width: 50,
+                                      height: 50,
+                                      fit: BoxFit.cover,
+                                    )
+                                  : Image.network(
+                                      user.image,
+                                      width: 50,
+                                      height: 50,
+                                    ),
                             ),
                           ),
                           const SizedBox(width: 12),
                           Expanded(
                             child: Text(
-                              user!.fullName,
+                              (user?.fullName == null || user!.fullName.trim().isEmpty)
+                                  ? 'Linh Hồn'
+                                  : user.fullName,
                               style: const TextStyle(
                                 fontSize: 20,
                                 color: Colors.white,
@@ -258,7 +278,7 @@ class _SubNavWorkBoardScreenState extends ConsumerState<SubNavWorkBoardScreen> {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        user.email,
+                        user!.email,
                         style: TextStyle(color: Colors.white70, fontSize: 14),
                       ),
                     ],
@@ -268,12 +288,21 @@ class _SubNavWorkBoardScreenState extends ConsumerState<SubNavWorkBoardScreen> {
                 SizedBox(height: 10),
                 InkWell(
                   onTap: () {
-                    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) {
-                      return SubNavWorkBoardScreen();
-                    },), (route) => false,);
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return SubNavWorkBoardScreen();
+                        },
+                      ),
+                      (route) => false,
+                    );
                   },
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0,
+                      vertical: 8.0,
+                    ),
                     child: Container(
                       decoration: BoxDecoration(
                         color: HelpersColors.bgFillTextField,
@@ -287,7 +316,10 @@ class _SubNavWorkBoardScreenState extends ConsumerState<SubNavWorkBoardScreen> {
                         ],
                       ),
                       child: ListTile(
-                        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
                         leading: Container(
                           decoration: BoxDecoration(
                             color: Colors.blue.withOpacity(0.2),
@@ -303,9 +335,9 @@ class _SubNavWorkBoardScreenState extends ConsumerState<SubNavWorkBoardScreen> {
                         title: Text(
                           'Work Board',
                           style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: HelpersColors.itemPrimary
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: HelpersColors.itemPrimary,
                           ),
                         ),
                         trailing: Icon(
@@ -317,15 +349,24 @@ class _SubNavWorkBoardScreenState extends ConsumerState<SubNavWorkBoardScreen> {
                     ),
                   ),
                 ),
-      
+
                 InkWell(
                   onTap: () {
-                    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) {
-                      return SubNavWorkBarChartScreen();
-                    },), (route) => false,);
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return SubNavWorkBarChartScreen();
+                        },
+                      ),
+                      (route) => false,
+                    );
                   },
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0,
+                      vertical: 8.0,
+                    ),
                     child: Container(
                       decoration: BoxDecoration(
                         color: HelpersColors.bgFillTextField,
@@ -339,7 +380,10 @@ class _SubNavWorkBoardScreenState extends ConsumerState<SubNavWorkBoardScreen> {
                         ],
                       ),
                       child: ListTile(
-                        contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                        contentPadding: EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
                         leading: Container(
                           decoration: BoxDecoration(
                             color: Colors.blue.withOpacity(0.2),
@@ -355,9 +399,9 @@ class _SubNavWorkBoardScreenState extends ConsumerState<SubNavWorkBoardScreen> {
                         title: Text(
                           'Work Chart',
                           style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                              color: HelpersColors.itemPrimary
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            color: HelpersColors.itemPrimary,
                           ),
                         ),
                         trailing: Icon(
@@ -365,11 +409,11 @@ class _SubNavWorkBoardScreenState extends ConsumerState<SubNavWorkBoardScreen> {
                           size: 18,
                           color: HelpersColors.itemPrimary,
                         ),
-      
                       ),
                     ),
                   ),
                 ),
+
                 // InkWell(
                 //   onTap: () {
                 //     Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) {
@@ -421,48 +465,64 @@ class _SubNavWorkBoardScreenState extends ConsumerState<SubNavWorkBoardScreen> {
                 //     ),
                 //   ),
                 // ),
-      
-      
               ],
             ),
           ),
         ),
-      
+
         bottomNavigationBar: CurvedNavigationBar(
           // color: Colors.black.withOpacity(0.2), // màu nền navigator bar
-            color: Color(0xFFC3C8E3).withOpacity(0.4), // màu nền navigator bar
-            index: _currentIndex, // ✅ Thêm dòng này
-            buttonBackgroundColor: HelpersColors.primaryColor,  // màu nề item navigator bar được nhấn
-            backgroundColor: Colors.transparent,
-            onTap: (value) {
-              setState(() {
-                _currentIndex = value;
-              });
-            },
-      
-            items: [
-              Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: Icon(Icons.home,size: _currentIndex == 0 ? 35 : 30,color: _currentIndex == 0 ?  Colors.white : Colors.blueGrey),
+          color: Color(0xFFC3C8E3).withOpacity(0.4),
+          // màu nền navigator bar
+          index: _currentIndex,
+          // ✅ Thêm dòng này
+          buttonBackgroundColor: HelpersColors.primaryColor,
+          // màu nề item navigator bar được nhấn
+          backgroundColor: Colors.transparent,
+          onTap: (value) {
+            setState(() {
+              _currentIndex = value;
+            });
+          },
+
+          items: [
+            Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: Icon(
+                Icons.home,
+                size: _currentIndex == 0 ? 35 : 30,
+                color: _currentIndex == 0 ? Colors.white : Colors.blueGrey,
               ),
-              Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: Icon(Icons.history,size: _currentIndex == 1 ? 35 : 30,color: _currentIndex == 1 ?  Colors.white : Colors.blueGrey),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: Icon(
+                Icons.history,
+                size: _currentIndex == 1 ? 35 : 30,
+                color: _currentIndex == 1 ? Colors.white : Colors.blueGrey,
               ),
-              Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: Icon(Icons.description,size: _currentIndex == 2 ? 35 : 30,color: _currentIndex == 2 ?  Colors.white : Colors.blueGrey),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: Icon(
+                Icons.description,
+                size: _currentIndex == 2 ? 35 : 30,
+                color: _currentIndex == 2 ? Colors.white : Colors.blueGrey,
               ),
-              Padding(
-                padding: const EdgeInsets.all(4.0),
-                child: Icon(Icons.person, size: _currentIndex == 3 ? 35 : 30,color: _currentIndex == 3 ?  Colors.white : Colors.blueGrey),
-              )
-      
-            ]),
-      
+            ),
+            Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: Icon(
+                Icons.person,
+                size: _currentIndex == 3 ? 35 : 30,
+                color: _currentIndex == 3 ? Colors.white : Colors.blueGrey,
+              ),
+            ),
+          ],
+        ),
+
         body: SafeArea(child: _pages[_currentIndex]),
       ),
     );
-
   }
 }
