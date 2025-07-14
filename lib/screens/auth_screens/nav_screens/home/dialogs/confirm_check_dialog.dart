@@ -1,23 +1,29 @@
 import 'dart:async';
+import 'package:daily_manage_user_app/helpers/tools_colors.dart';
 import 'package:flutter/material.dart';
 
-class ConfirmCheckInWidget extends StatefulWidget {
+import '../../../../common_screens/widgets/top_notification_widget.dart';
+enum CheckType { checkIn, checkOut }
+class ConfirmCheckWidget extends StatefulWidget {
   final String title;
+  final CheckType type;
   final String Function() contentBuilder;
   final VoidCallback onConfirm;
 
-  const ConfirmCheckInWidget({
+  const ConfirmCheckWidget({
     super.key,
     required this.title,
     required this.contentBuilder,
     required this.onConfirm,
+    required this.type,
+
   });
 
   @override
-  State<ConfirmCheckInWidget> createState() => _DialogConfirmWidgetState();
+  State<ConfirmCheckWidget> createState() => _DialogConfirmWidgetState();
 }
 
-class _DialogConfirmWidgetState extends State<ConfirmCheckInWidget> {
+class _DialogConfirmWidgetState extends State<ConfirmCheckWidget> {
   Timer? _timer;
 
   @override
@@ -40,6 +46,9 @@ class _DialogConfirmWidgetState extends State<ConfirmCheckInWidget> {
 
   @override
   Widget build(BuildContext context) {
+    final isSuccess = widget.type == CheckType.checkIn;
+    final background = isSuccess ? HelpersColors.primaryColor : HelpersColors.itemSelected;
+
     return Dialog(
       backgroundColor: Colors.white,
       shape: RoundedRectangleBorder(
@@ -53,7 +62,7 @@ class _DialogConfirmWidgetState extends State<ConfirmCheckInWidget> {
             width: double.infinity,
             padding: EdgeInsets.symmetric(vertical: 16, horizontal: 20),
             decoration: BoxDecoration(
-              color: Color(0xFF328BFF),
+              color: background,
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20),
                 topRight: Radius.circular(20),
@@ -93,23 +102,24 @@ class _DialogConfirmWidgetState extends State<ConfirmCheckInWidget> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          side: BorderSide(color: Color(0xFF328BFF)),
+                          side: BorderSide(color: background),
                         ),
                         child: Text(
                           'Cancel',
-                          style: TextStyle(color: Color(0xFF328BFF)),
+                          style: TextStyle(color: background),
                         ),
                       ),
                     ),
                     SizedBox(width: 12),
                     Expanded(
                       child: ElevatedButton(
-                        onPressed: () {
-                          widget.onConfirm();
+                        onPressed: () async{
                           Navigator.pop(context);
+                          widget.onConfirm();
+
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xFF328BFF),
+                          backgroundColor: background,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),

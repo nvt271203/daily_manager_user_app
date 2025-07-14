@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
-class CheckStatusFinishDialogWidget extends StatelessWidget {
+class CheckStatusFinishDialogWidget extends StatefulWidget {
   final String title;
   final DateTime time;
   final String message;
   final Color iconColor;
   final IconData icon;
-  final VoidCallback? onClose;
+  final VoidCallback onClose;
 
   final DateTime? checkInTime;
   final DateTime? checkOutTime;
@@ -19,12 +19,17 @@ class CheckStatusFinishDialogWidget extends StatelessWidget {
     required this.message,
     required this.iconColor,
     required this.icon,
-    this.onClose,
+    required this.onClose,
     this.checkInTime,
     this.checkOutTime,
     this.workDuration,
   }) : super(key: key);
 
+  @override
+  State<CheckStatusFinishDialogWidget> createState() => _CheckStatusFinishDialogWidgetState();
+}
+
+class _CheckStatusFinishDialogWidgetState extends State<CheckStatusFinishDialogWidget> {
   String _formatTime(DateTime time) {
     final local = time.toLocal();
     return "${local.hour.toString().padLeft(2, '0')}:"
@@ -53,15 +58,15 @@ class CheckStatusFinishDialogWidget extends StatelessWidget {
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: iconColor.withOpacity(0.15),
+                color: widget.iconColor.withOpacity(0.15),
               ),
-              child: Icon(icon, size: 50, color: iconColor),
+              child: Icon(widget.icon, size: 50, color: widget.iconColor),
             ),
             const SizedBox(height: 16),
 
             /// Tiêu đề
             Text(
-              title,
+              widget.title,
               style: const TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
@@ -73,7 +78,7 @@ class CheckStatusFinishDialogWidget extends StatelessWidget {
 
             /// Thời gian chính
             Text(
-              _formatTime(time),
+              _formatTime(widget.time),
               style: TextStyle(
                 fontSize: 16,
                 color: Colors.grey[700],
@@ -85,16 +90,16 @@ class CheckStatusFinishDialogWidget extends StatelessWidget {
 
             /// Thông điệp phụ
             Text(
-              message,
+              widget.message,
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 14, color: Colors.grey[600]),
             ),
 
             /// Nếu là check out thì hiển thị thêm
-            if (title.toLowerCase().contains('out') &&
-                checkInTime != null &&
-                checkOutTime != null &&
-                workDuration != null)
+            if (widget.title.toLowerCase().contains('out') &&
+                widget.checkInTime != null &&
+                widget.checkOutTime != null &&
+                widget.workDuration != null)
               Padding(
                 padding: const EdgeInsets.only(top: 20),
                 child: Column(
@@ -102,9 +107,9 @@ class CheckStatusFinishDialogWidget extends StatelessWidget {
                   children: [
                     Divider(thickness: 1.2),
                     const SizedBox(height: 8),
-                    _buildInfoRow("Check-in:", _formatTime(checkInTime!)),
-                    _buildInfoRow("Check-out:", _formatTime(checkOutTime!)),
-                    _buildInfoRow("Total worked:", _formatDuration(workDuration!), isHighlight: true),
+                    _buildInfoRow("Check-in:", _formatTime(widget.checkInTime!)),
+                    _buildInfoRow("Check-out:", _formatTime(widget.checkOutTime!)),
+                    _buildInfoRow("Total worked:", _formatDuration(widget.workDuration!), isHighlight: true),
                     const SizedBox(height: 8),
                     Divider(thickness: 1.2),
                   ],
@@ -118,8 +123,8 @@ class CheckStatusFinishDialogWidget extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.pop(context);
-                  onClose?.call();
+                  // Navigator.pop(context);
+                  widget.onClose();
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blueAccent,
