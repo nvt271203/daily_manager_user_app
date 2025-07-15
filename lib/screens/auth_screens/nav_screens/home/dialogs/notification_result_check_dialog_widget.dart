@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class CheckStatusFinishDialogWidget extends StatefulWidget {
+class NotificationResultCheckDialogWidget extends StatefulWidget {
   final String title;
   final DateTime time;
   final String message;
@@ -12,7 +12,7 @@ class CheckStatusFinishDialogWidget extends StatefulWidget {
   final DateTime? checkOutTime;
   final Duration? workDuration;
 
-  const CheckStatusFinishDialogWidget({
+  const NotificationResultCheckDialogWidget({
     Key? key,
     required this.title,
     required this.time,
@@ -26,10 +26,10 @@ class CheckStatusFinishDialogWidget extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<CheckStatusFinishDialogWidget> createState() => _CheckStatusFinishDialogWidgetState();
+  State<NotificationResultCheckDialogWidget> createState() => _CheckStatusFinishDialogWidgetState();
 }
 
-class _CheckStatusFinishDialogWidgetState extends State<CheckStatusFinishDialogWidget> {
+class _CheckStatusFinishDialogWidgetState extends State<NotificationResultCheckDialogWidget> {
   String _formatTime(DateTime time) {
     final local = time.toLocal();
     return "${local.hour.toString().padLeft(2, '0')}:"
@@ -123,8 +123,9 @@ class _CheckStatusFinishDialogWidgetState extends State<CheckStatusFinishDialogW
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  // Navigator.pop(context);
+                  Navigator.pop(context);
                   widget.onClose();
+                  // widget.onClose;
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blueAccent,

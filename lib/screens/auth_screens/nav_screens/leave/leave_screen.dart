@@ -81,129 +81,122 @@ class _LeaveScreenState extends ConsumerState<LeaveScreen> {
             padding: const EdgeInsets.all(16.0),
             child: Column(
               children: [
-                // Header
-                // Center(
-                //   child: Container(
-                //     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                //     decoration: BoxDecoration(
-                //       borderRadius: BorderRadius.circular(50),
-                //       color: Colors.white,
-                //       border: Border.all(color: HelpersColors.primaryColor),
+
+
+
+
+
+                //
+                // const Text(
+                //   'Leave',
+                //   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                // ),
+                // Container(
+                //   height: 2,
+                //   width: double.infinity,
+                //   decoration: BoxDecoration(
+                //     gradient: LinearGradient(
+                //       colors: [
+                //         HelpersColors.primaryColor,
+                //         HelpersColors.secondaryColor,
+                //       ],
                 //     ),
-                //     child: Text('Leave', style: TextStyle(color: HelpersColors.primaryColor)),
                 //   ),
                 // ),
-                // const SizedBox(height: 10),
-                const Text(
-                  'Leave',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                Container(
-                  height: 2,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        HelpersColors.primaryColor,
-                        HelpersColors.secondaryColor,
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-
-                // Summary boxes
-                Row(
-                  children: [
-                    Expanded(
-                      child: Stack(
-                        children: [
-                          Positioned.fill(
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(32),
-                              child: Image.asset(
-                                'assets/images/bg_button_1.png',
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: const [
-                                Text(
-                                  'Remaining\nleave day:',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(height: 8),
-                                Center(
-                                  child: Text(
-                                    '2 days',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 24,
-                                      fontWeight: FontWeight.w900,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    SizedBox(width: 20),
-                    Expanded(
-                      child: Stack(
-                        children: [
-                          Positioned.fill(
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(32),
-                              child: Image.asset(
-                                'assets/images/bg_button_1.png',
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: const [
-                                Text(
-                                  'Used leave\ndays:',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(height: 8),
-                                Center(
-                                  child: Text(
-                                    // '6 days',
-                                    '',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 24,
-                                      fontWeight: FontWeight.w900,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 20),
+                // const SizedBox(height: 20),
+                //
+                // // Summary boxes
+                // Row(
+                //   children: [
+                //     Expanded(
+                //       child: Stack(
+                //         children: [
+                //           Positioned.fill(
+                //             child: ClipRRect(
+                //               borderRadius: BorderRadius.circular(32),
+                //               child: Image.asset(
+                //                 'assets/images/bg_button_1.png',
+                //                 fit: BoxFit.cover,
+                //               ),
+                //             ),
+                //           ),
+                //           Padding(
+                //             padding: const EdgeInsets.all(16),
+                //             child: Column(
+                //               crossAxisAlignment: CrossAxisAlignment.start,
+                //               children: const [
+                //                 Text(
+                //                   'Remaining\nleave day:',
+                //                   style: TextStyle(
+                //                     color: Colors.white,
+                //                     fontSize: 16,
+                //                     fontWeight: FontWeight.bold,
+                //                   ),
+                //                 ),
+                //                 SizedBox(height: 8),
+                //                 Center(
+                //                   child: Text(
+                //                     '2 days',
+                //                     style: TextStyle(
+                //                       color: Colors.white,
+                //                       fontSize: 24,
+                //                       fontWeight: FontWeight.w900,
+                //                     ),
+                //                   ),
+                //                 ),
+                //               ],
+                //             ),
+                //           ),
+                //         ],
+                //       ),
+                //     ),
+                //     SizedBox(width: 20),
+                //     Expanded(
+                //       child: Stack(
+                //         children: [
+                //           Positioned.fill(
+                //             child: ClipRRect(
+                //               borderRadius: BorderRadius.circular(32),
+                //               child: Image.asset(
+                //                 'assets/images/bg_button_1.png',
+                //                 fit: BoxFit.cover,
+                //               ),
+                //             ),
+                //           ),
+                //           Padding(
+                //             padding: const EdgeInsets.all(16),
+                //             child: Column(
+                //               crossAxisAlignment: CrossAxisAlignment.start,
+                //               children: const [
+                //                 Text(
+                //                   'Used leave\ndays:',
+                //                   style: TextStyle(
+                //                     color: Colors.white,
+                //                     fontSize: 16,
+                //                     fontWeight: FontWeight.bold,
+                //                   ),
+                //                 ),
+                //                 SizedBox(height: 8),
+                //                 Center(
+                //                   child: Text(
+                //                     // '6 days',
+                //                     '',
+                //                     style: TextStyle(
+                //                       color: Colors.white,
+                //                       fontSize: 24,
+                //                       fontWeight: FontWeight.w900,
+                //                     ),
+                //                   ),
+                //                 ),
+                //               ],
+                //             ),
+                //           ),
+                //         ],
+                //       ),
+                //     ),
+                //   ],
+                // ),
+                // const SizedBox(height: 20),
 
                 // Year Filter
                 Row(
@@ -435,8 +428,8 @@ class _LeaveScreenState extends ConsumerState<LeaveScreen> {
                               ),
                               ...items.map(
                                 (leave) => InkWell(
-                                  onTap: () {
-                                    Navigator.push(
+                                  onTap: () async{
+                                    final result = await Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) {
@@ -446,6 +439,11 @@ class _LeaveScreenState extends ConsumerState<LeaveScreen> {
                                         },
                                       ),
                                     );
+
+                                    if (result == true) {
+                                      ref.read(leaveProvider.notifier).loadLeaves(); // reload
+                                    }
+
                                   },
                                   child: Padding(
                                     padding: const EdgeInsets.only(left: 20.0),
@@ -599,7 +597,7 @@ class LeaveHistoryItem extends StatelessWidget {
                                 ),
                               ),
                               Text(
-                                '${FormatHelper.formatTimeHH_MM(leave.dateCreated)} - ${FormatHelper.formatDate_DD_MM_YYYY(leave.dateCreated)}',
+                                '${FormatHelper.formatTimeHH_MM_AP(leave.dateCreated)} - ${FormatHelper.formatDate_DD_MM_YYYY(leave.dateCreated)}',
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 13,

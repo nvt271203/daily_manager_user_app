@@ -24,12 +24,15 @@ class _InformationScreenState extends ConsumerState<InformationScreen> {
   String _selectedSex = 'Male'; // hoặc null nếu chưa chọn
   final List<String> sex = ['Male', 'Female', 'Other'];
   final ImagePicker picker = ImagePicker();
+
+  // Lắng nghe sự kiện click
   late TextEditingController _fullNameController;
   late TextEditingController _phoneController;
   late TextEditingController _emailController;
   late TextEditingController _positionController;
   late TextEditingController _passwordController;
 
+  // Lắng nghe sự kiên focus
   late FocusNode _focusNodeFullName;
   late FocusNode _focusNodePhoneNumber;
   bool _isEditing = false;
@@ -93,11 +96,10 @@ class _InformationScreenState extends ConsumerState<InformationScreen> {
       appBar: AppBar(
         backgroundColor: HelpersColors.itemPrimary,
         iconTheme: IconThemeData(color: Colors.white),
-        title: Center(
-          child: Text(
-            'Information',
-            style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-          ),
+        centerTitle: true,
+        title: Text(
+          'Information',
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
         ),
       ),
       body: Padding(
@@ -127,84 +129,99 @@ class _InformationScreenState extends ConsumerState<InformationScreen> {
                     //     ),
                     //   ),
                     // ),
-
-                    image == null
-                        ?
                     Center(
-                      child: Container(
-                        margin: EdgeInsets.only(top: 20),
-                        width: 120,
-                        height: 120,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
-                          border: Border.all(color: Colors.grey, width: 4),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8), // Đây là padding thực sự
-                          child: ClipOval(
-                            child: Image(
-                              image: user?.image == null || user!.image.isEmpty
-                                  ? AssetImage(
-                                user?.sex == 'Male'
-                                    ? 'assets/images/avatar_boy_default.jpg'
-                                    : user?.sex == "Female"
-                                    ? 'assets/images/avatar_girl_default.jpg'
-                                    : 'assets/images/avt_default_2.jpg',
-                              ) as ImageProvider
-                                  : NetworkImage(user.image),
-                              fit: BoxFit.cover,
-                              width: double.infinity,
-                              height: double.infinity,
+                      child: Stack(
+                        children: [
+                          Container(
+                            margin: EdgeInsets.only(top: 20),
+                            width: 120,
+                            height: 120,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: Colors.black.withOpacity(0.6),
+                                width: 4,
+                              ),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8),
+                              // Đây là padding thực sự
+                              child: ClipOval(
+                                child: Image(
+                                  image:
+                                  user?.image == null ||
+                                      user!.image.isEmpty
+                                      ? AssetImage(
+                                    user?.sex == 'Male'
+                                        ? 'assets/images/avatar_boy_default.jpg'
+                                        : user?.sex == "Female"
+                                        ? 'assets/images/avatar_girl_default.jpg'
+                                        : 'assets/images/avt_default_2.jpg',
+                                  )
+                                  as ImageProvider
+                                      : NetworkImage(user.image),
+                                  fit: BoxFit.cover,
+                                  width: double.infinity,
+                                  height: double.infinity,
+                                ),
+                              ),
                             ),
                           ),
-                        ),
+                          Positioned(
+                            bottom: 0,
+                            right: 0,
+                            child: InkWell(
+                              onTap: () {
+                                // chooseImage();
+                              },
+                              child: Container(
+                                height: 40,
+                                width: 40,
+                                child: Icon(Icons.upload_rounded,color: Colors.white,),
+                                decoration: BoxDecoration(
+                                    color: HelpersColors.itemPrimary,
+                                    border: Border.all(color: Colors.white, width: 4),
+                                    borderRadius: BorderRadius.all(Radius.circular(50))
+                                ),
+                              ),
+                            ),
+                          ),
+
+                        ],
                       ),
-                    )
-                        : Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Stack(
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(10),
-                                  child: Container(
-                                    height: 150,
-                                    width: 150,
-                                    decoration: BoxDecoration(
-                                      border: Border.all(
-                                        width: 2,
-                                        color: Colors.black,
-                                      ),
-                                      borderRadius: BorderRadius.all(
-                                        Radius.circular(10),
-                                      ),
-                                    ),
-                                    child: Image.file(
-                                      image!,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                ),
-                                Positioned(
-                                  top: 0,
-                                  right: 0,
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: Colors.black,
-                                      borderRadius: BorderRadius.only(
-                                        topRight: Radius.circular(10),
-                                        bottomLeft: Radius.circular(10),
-                                      ),
-                                    ),
-                                    child: Icon(
-                                      Icons.edit,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                              ],
+                    ),
+
+
+                    SizedBox(height: 10),
+                    Container(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            (user?.fullName == null ||
+                                    user!.fullName.trim().isEmpty)
+                                ? 'Linh Hồn'
+                                : user.fullName,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 25,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
+                          // SizedBox(width: 60),
+                          // Text(
+                          //   '18',
+                          //   style: TextStyle(
+                          //     color: Colors.blue,
+                          //     fontSize: 20,
+                          //     fontWeight: FontWeight.bold,
+                          //   ),
+                          // ),
+                          // Icon(Icons.male, color: Colors.blue),
+                        ],
+                      ),
+                    ),
 
                     //Email
                     // SizedBox(height: 15),

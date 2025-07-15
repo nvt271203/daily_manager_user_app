@@ -346,7 +346,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           );
                         },
                         child: Text(
-                          'Forget password ?',
+                          'Forgot password ?',
                           style: TextStyle(
                             color: Colors.red,
                             fontStyle: FontStyle.italic,

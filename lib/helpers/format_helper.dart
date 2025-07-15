@@ -16,16 +16,27 @@ class FormatHelper {
     final nowVN = dateTime.toUtc().add(Duration(hours: 7));
     return DateFormat('HH:mm:ss').format(nowVN);
   }
-  static String formatTimeHH_MM(DateTime dateTime) {
+  static String formatTimeHH_MM_AP(DateTime dateTime) {
     final nowVN = dateTime.toUtc().add(Duration(hours: 7));
     return DateFormat('hh:mm a').format(nowVN);
   }
-
-  /// Lấy thứ hiện tại theo tiếng Việt
-  static String formatWeekdayVN(DateTime dateTime) {
-    final nowVN = dateTime.toUtc().add(Duration(hours: 7));
-    return DateFormat.EEEE('vi_VN').format(nowVN); // e.g. Thứ Năm
+  static String formatTimeHH_MM(DateTime dateTime) {
+    final nowVN = dateTime.toUtc().add(Duration(hours: 7)); // Giờ Việt Nam
+    return DateFormat('HH:mm').format(nowVN); // 24h format: 13:45, 20:30, etc.
   }
+
+  // /// Lấy thứ hiện tại theo tiếng Việt
+  // static String formatWeekdayVN(DateTime dateTime) {
+  //   final nowVN = dateTime.toUtc().add(Duration(hours: 7));
+  //   return DateFormat.EEEE('vi_VN').format(nowVN); // e.g. Thứ Năm
+  // }
+  // Phương thức mới cho thứ bằng tiếng Anh
+  static String formatWeekdayEN(DateTime dateTime) {
+    return DateFormat('EEEE').format(dateTime); // 'EEEE' định dạng thành tên đầy đủ của thứ (ví dụ: "Monday")
+  }
+
+
+
   //Format thời gian (giờ:phút:giây):
   static String formatDuration(Duration d) {
     String twoDigits(int n) => n.toString().padLeft(2, '0');

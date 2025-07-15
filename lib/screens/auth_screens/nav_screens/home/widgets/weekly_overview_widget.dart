@@ -104,66 +104,144 @@ class _WeeklyOverviewState extends State<WeeklyOverview> {
                 ),
               ),
               Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: List.generate(7, (index) {
-                    DateTime date = _weekDates[index];
+                child: LayoutBuilder(
+                  builder: (context, constraints) {
+                    // Tính tổng chiều rộng các item (ví dụ mỗi item là 70)
+                    const double itemWidth = 42;
+                    final double totalItemWidth = itemWidth * 7;
 
-                    bool isSelected = DateFormat('yyyy-MM-dd').format(date) ==
-                        DateFormat('yyyy-MM-dd').format(_selectedDate);
+                    // Nếu đủ chỗ, không cần scroll
+                    if (constraints.maxWidth >= totalItemWidth) {
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: List.generate(7, (index) {
+                          DateTime date = _weekDates[index];
 
-                    String day = DateFormat('E').format(date);
-                    String dayNum = DateFormat('dd').format(date);
+                          bool isSelected = DateFormat('yyyy-MM-dd').format(date) ==
+                              DateFormat('yyyy-MM-dd').format(_selectedDate);
 
-                    return GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _selectedDate = date;
-                        });
-                      },
-                      child: Column(
-                        children: [
-                          Text(
-                            day,
-                            style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.grey[600],
+                          String day = DateFormat('E').format(date);
+                          String dayNum = DateFormat('dd').format(date);
+
+                          return GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _selectedDate = date;
+                              });
+                            },
+                            child: Column(
+                              children: [
+                                Text(
+                                  day,
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.grey[600],
+                                  ),
+                                ),
+                                const SizedBox(height: 6),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 10,
+                                    horizontal: 12,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    gradient: isSelected
+                                        ? LinearGradient(
+                                      colors: [
+                                        Color(0xFF5D5FEF),
+                                        Color(0xFFCB6CE6),
+                                      ],
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
+                                    )
+                                        : null,
+                                    borderRadius: BorderRadius.circular(14),
+                                    color: isSelected ? null : Colors.transparent,
+                                  ),
+                                  child: Text(
+                                    dayNum,
+                                    style: TextStyle(
+                                      color: isSelected ? Colors.white : Colors.grey[800],
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
-                          const SizedBox(height: 6),
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 10,
-                              horizontal: 12,
-                            ),
-                            decoration: BoxDecoration(
-                              gradient: isSelected
-                                  ? LinearGradient(
-                                colors: [
-                                  Color(0xFF5D5FEF),
-                                  Color(0xFFCB6CE6),
+                          );
+                        }),
+                      );
+
+                    } else{
+                      return SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: List.generate(7, (index) {
+                            DateTime date = _weekDates[index];
+
+                            bool isSelected = DateFormat('yyyy-MM-dd').format(date) ==
+                                DateFormat('yyyy-MM-dd').format(_selectedDate);
+
+                            String day = DateFormat('E').format(date);
+                            String dayNum = DateFormat('dd').format(date);
+
+                            return GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  _selectedDate = date;
+                                });
+                              },
+                              child: Column(
+                                children: [
+                                  Text(
+                                    day,
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.grey[600],
+                                    ),
+                                  ),
+                                  const SizedBox(height: 6),
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 10,
+                                      horizontal: 12,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      gradient: isSelected
+                                          ? LinearGradient(
+                                        colors: [
+                                          Color(0xFF5D5FEF),
+                                          Color(0xFFCB6CE6),
+                                        ],
+                                        begin: Alignment.topCenter,
+                                        end: Alignment.bottomCenter,
+                                      )
+                                          : null,
+                                      borderRadius: BorderRadius.circular(14),
+                                      color: isSelected ? null : Colors.transparent,
+                                    ),
+                                    child: Text(
+                                      dayNum,
+                                      style: TextStyle(
+                                        color: isSelected ? Colors.white : Colors.grey[800],
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ),
                                 ],
-                                begin: Alignment.topCenter,
-                                end: Alignment.bottomCenter,
-                              )
-                                  : null,
-                              borderRadius: BorderRadius.circular(14),
-                              color: isSelected ? null : Colors.transparent,
-                            ),
-                            child: Text(
-                              dayNum,
-                              style: TextStyle(
-                                color: isSelected ? Colors.white : Colors.grey[800],
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
                               ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  }),
+                            );
+                          }),
+                        ),
+                      );
+
+                    }
+                  },
                 ),
               ),
               InkWell(

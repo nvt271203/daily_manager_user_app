@@ -4,12 +4,14 @@ class DialogConfirmWidget extends StatefulWidget {
   final String title;
   final String content;
   final VoidCallback onConfirm;
+  final Color color; // ✅ Đúng kiểu và phải là final
 
   const DialogConfirmWidget({
     super.key,
     required this.title,
     required this.content,
     required this.onConfirm,
+    this.color = Colors.blue, // ✅ Giá trị mặc định
   });
 
   @override
@@ -32,7 +34,7 @@ class _DialogConfirmWidgetState extends State<DialogConfirmWidget> {
             width: double.infinity,
             padding: EdgeInsets.symmetric(vertical: 16, horizontal: 20),
             decoration: BoxDecoration(
-              color: Color(0xFF328BFF),
+              color:  widget.color,
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(20),
                 topRight: Radius.circular(20),
@@ -71,11 +73,11 @@ class _DialogConfirmWidgetState extends State<DialogConfirmWidget> {
                         style: OutlinedButton.styleFrom(
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12)),
-                          side: BorderSide(color: Color(0xFF328BFF)),
+                          side: BorderSide(color: widget.color),
                         ),
                         child: Text(
                           'Cancel',
-                          style: TextStyle(color: Color(0xFF328BFF)),
+                          style: TextStyle(color: widget.color),
                         ),
                       ),
                     ),
@@ -84,10 +86,10 @@ class _DialogConfirmWidgetState extends State<DialogConfirmWidget> {
                       child: ElevatedButton(
                         onPressed: () {
                           widget.onConfirm();
-                          Navigator.pop(context);
+                          // Navigator.pop(context);
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xFF328BFF),
+                          backgroundColor: widget.color,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12)),
                         ),

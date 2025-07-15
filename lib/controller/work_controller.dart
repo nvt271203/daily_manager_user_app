@@ -15,7 +15,7 @@ class WorkController {
     required Duration workTime,
     required String report,
     required String plan,
-    required String note,
+    String? note,
     required String userId,
   }) async {
     Work work = Work(
@@ -25,7 +25,7 @@ class WorkController {
       workTime: workTime,
       report: report,
       plan: plan,
-      note: note.trim().isEmpty ? 'Nothing' : note.trim(), // 👈 xử lý tại đây,
+      note: note!.isEmpty ? 'Nothing' : note.trim(), // 👈 xử lý tại đây,
       userId: userId,
     );
     try {
@@ -39,9 +39,9 @@ class WorkController {
       print('response - ${response.body.toString()}');
       // trả về true nếu upload dữ liệu thành công - nếu ko check mã trạng thái mà return thẳng true ở else thì dẫn đến dữ liệu upload thất bại nó cũng trả về true
       if(response.statusCode == 200 || response.statusCode == 201){
-        manageHttpResponse(response, context, () {
-          showSnackBar(context, 'Checkout success');
-        },);
+        // manageHttpResponse(response, context, () {
+        //   showSnackBar(context, 'Checkout success');
+        // },);
         return true;
       }else{
         return false;

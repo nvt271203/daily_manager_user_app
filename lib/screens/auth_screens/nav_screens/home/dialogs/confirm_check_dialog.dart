@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 
 import '../../../../common_screens/widgets/top_notification_widget.dart';
 enum CheckType { checkIn, checkOut }
-class ConfirmCheckWidget extends StatefulWidget {
+class ConfirmCheckDialog extends StatefulWidget {
   final String title;
   final CheckType type;
   final String Function() contentBuilder;
   final VoidCallback onConfirm;
 
-  const ConfirmCheckWidget({
+  const ConfirmCheckDialog({
     super.key,
     required this.title,
     required this.contentBuilder,
@@ -20,10 +20,10 @@ class ConfirmCheckWidget extends StatefulWidget {
   });
 
   @override
-  State<ConfirmCheckWidget> createState() => _DialogConfirmWidgetState();
+  State<ConfirmCheckDialog> createState() => _DialogConfirmWidgetState();
 }
 
-class _DialogConfirmWidgetState extends State<ConfirmCheckWidget> {
+class _DialogConfirmWidgetState extends State<ConfirmCheckDialog> {
   Timer? _timer;
 
   @override
@@ -113,8 +113,13 @@ class _DialogConfirmWidgetState extends State<ConfirmCheckWidget> {
                     SizedBox(width: 12),
                     Expanded(
                       child: ElevatedButton(
-                        onPressed: () async{
-                          Navigator.pop(context);
+                        onPressed: () {
+                          // // Nhấn xác nhận confim phát là đóng, thì ok r, đóng để xử lý các tiến trình tiếp
+                          // Navigator.pop(context);
+                          // // ✅ Đóng dialog sau khi xử lý xong
+                          // widget.onConfirm();   // 🟡 Gọi và CHỜ xử lý xong
+                          Navigator.pop(context, true); // Truy kết quả về cho cha
+                          // Navigator.pop(context);
                           widget.onConfirm();
 
                         },

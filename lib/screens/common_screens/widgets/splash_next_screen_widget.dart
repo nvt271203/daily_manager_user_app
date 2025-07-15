@@ -69,6 +69,7 @@ class SplashNextScreenWidget extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 24),
+                  Lottie.asset('assets/lotties/loadingg.json', width: 100),
                   Text(
                     "Loading...",
                     style: TextStyle(

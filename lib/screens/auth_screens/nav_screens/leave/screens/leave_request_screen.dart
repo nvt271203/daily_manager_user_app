@@ -3,11 +3,13 @@ import 'package:daily_manage_user_app/helpers/format_helper.dart';
 import 'package:daily_manage_user_app/helpers/tools_colors.dart';
 import 'package:daily_manage_user_app/models/leave.dart';
 import 'package:daily_manage_user_app/providers/user_provider.dart';
+import 'package:daily_manage_user_app/screens/common_screens/widgets/top_notification_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class LeaveRequestScreen extends ConsumerStatefulWidget {
-  const LeaveRequestScreen({super.key});
+  const LeaveRequestScreen( {super.key, this.leave,});
+  final Leave? leave;
 
   @override
   _LeaveRequestScreenState createState() => _LeaveRequestScreenState();
@@ -27,6 +29,12 @@ class _LeaveRequestScreenState extends ConsumerState<LeaveRequestScreen> {
   TimeOfDay? _endTime; // giờ kết thúc
   DateTime? _endDate;
 
+
+  String _textErrorDayStart = 'Day start is required';
+  String _textErrorDayEnd = 'Day End is required';
+  String _textErrorTimeStart = 'Time start is required';
+  String _textErrorTimeEnd = 'Time End is required';
+
   late DateTime? _fullStartDateTime;
   late DateTime? _fullEndDateTime;
   late String _reason;
@@ -40,15 +48,62 @@ class _LeaveRequestScreenState extends ConsumerState<LeaveRequestScreen> {
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    if(widget.leave != null){
+      final leave = widget.leave!;
+      setState(() {
+        _leaveType = leave.leaveType;
+        _leaveTimeType = leave.leaveTimeType;
+        _startDate = leave.startDate;
+        _endDate = leave.endDate;
+        _startTime = TimeOfDay(hour: leave.startDate.hour, minute: leave.startDate.minute);
+        _endTime = TimeOfDay(hour: leave.endDate.hour, minute: leave.endDate.minute);
+        _reason = leave.reason ?? '';
+        _fullStartDateTime = leave.startDate;
+        _fullEndDateTime = leave.endDate;
+      });
+    }
+  }
+
+
   void _chooseStartTimePicker() async {
     final pickedTime = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.now(),
     );
     if (pickedTime != null) {
+
+      // Nếu ngày bắt đầu và kết thúc giống nhau, kiểm tra thời gian
+      if (_endTime != null && _startDate != null && _endDate != null && _startDate!.isAtSameMomentAs(_endDate!)) {
+        final pickedDateTime = DateTime(0, 0, 0, pickedTime.hour, pickedTime.minute);
+        final endDateTime = DateTime(0, 0, 0, _endTime!.hour, _endTime!.minute);
+
+        if (pickedDateTime.isAfter(endDateTime) || pickedDateTime.isAtSameMomentAs(endDateTime)) {
+          setState(() {
+            _errorStartTime = true;
+            _textErrorTimeStart = 'Start time must be before end time when dates are the same';
+          });
+
+          showTopNotification(
+            context: context,
+            message: 'Start time must be before end time when dates are the same',
+            type: NotificationType.error,
+          );
+          return;
+        }
+      }
+
       setState(() {
         _startTime = pickedTime;
+        // 👉 Nếu thời gian không phải là 8:30 thì đổi sang Part Time
+        if (!(pickedTime.hour == 8 && pickedTime.minute == 30)) {
+          _leaveTimeType = 'Part Time';
+        }
       });
+
 
       // if (_startDate != null) {
       //   // Cập nhật lại _startDate kèm giờ
@@ -64,61 +119,114 @@ class _LeaveRequestScreenState extends ConsumerState<LeaveRequestScreen> {
       //   });
       // }
     }
+
+
   }
+  // void _chooseEndTimePicker() async {
+  //   final pickedTime = await showTimePicker(
+  //     context: context,
+  //     initialTime: TimeOfDay.now(),
+  //   );
+  //   if (pickedTime != null) {
+  //
+  //     if (pickedTime != null) {
+  //       // Nếu ngày bắt đầu và kết thúc giống nhau, kiểm tra thời gian
+  //       if (_startTime != null &&
+  //           _startDate != null &&
+  //           _endDate != null &&
+  //           _startDate!.isAtSameMomentAs(_endDate!)) {
+  //         final startDateTime = DateTime(
+  //             0, 0, 0, _startTime!.hour, _startTime!.minute);
+  //         final pickedDateTime = DateTime(
+  //             0, 0, 0, pickedTime.hour, pickedTime.minute);
+  //
+  //         if (pickedDateTime.isBefore(startDateTime) ||
+  //             pickedDateTime.isAtSameMomentAs(startDateTime)) {
+  //           setState(() {
+  //             _errorEndTime = true;
+  //             _textErrorTimeEnd =
+  //             'End time must be after start time when dates are the same';
+  //           });
+  //
+  //           showTopNotification(
+  //             context: context,
+  //             message: 'End time must be after start time when dates are the same',
+  //             type: NotificationType.error,
+  //           );
+  //           return;
+  //         }
+  //       }
+  //
+  //
+  //       setState(() {
+  //         _endTime = pickedTime;
+  //       });
+  //     }
+  //
+  //
+  //     // if (_startDate != null) {
+  //     //   // Cập nhật lại _startDate kèm giờ
+  //     //   final newDate = DateTime(
+  //     //     _startDate!.year,
+  //     //     _startDate!.month,
+  //     //     _startDate!.day,
+  //     //     pickedTime.hour,
+  //     //     pickedTime.minute,
+  //     //   );
+  //     //   setState(() {
+  //     //     _startDate = newDate;
+  //     //   });
+  //     // }
+  //   }
+  // }
   void _chooseEndTimePicker() async {
     final pickedTime = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.now(),
     );
+
     if (pickedTime != null) {
+      bool _isSameDate() =>
+          _startDate != null &&
+              _endDate != null &&
+              _startDate!.year == _endDate!.year &&
+              _startDate!.month == _endDate!.month &&
+              _startDate!.day == _endDate!.day;
+
+      if (_startTime != null && _isSameDate()) {
+        final pickedDateTime = DateTime(0, 0, 0, pickedTime.hour, pickedTime.minute);
+        final startDateTime = DateTime(0, 0, 0, _startTime!.hour, _startTime!.minute);
+
+        if (!pickedDateTime.isAfter(startDateTime)) {
+          setState(() {
+            _errorEndTime = true;
+            _textErrorTimeEnd = 'End time must be after start time when dates are the same';
+          });
+
+          showTopNotification(
+            context: context,
+            message: 'End time must be after start time when dates are the same',
+            type: NotificationType.error,
+          );
+          return;
+        }
+      }
+
       setState(() {
         _endTime = pickedTime;
-      });
-      // if (_startDate != null) {
-      //   // Cập nhật lại _startDate kèm giờ
-      //   final newDate = DateTime(
-      //     _startDate!.year,
-      //     _startDate!.month,
-      //     _startDate!.day,
-      //     pickedTime.hour,
-      //     pickedTime.minute,
-      //   );
-      //   setState(() {
-      //     _startDate = newDate;
-      //   });
-      // }
-    }
-  }
-  void _chooseDateStartPicker() async {
-    final now = DateTime.now();
-    final initialDate = DateTime.now();
-    final firstDate = DateTime(now.year);
-    final lastDate = DateTime(now.year + 1);
-    final pickerDate = await showDatePicker(
-      initialDate: initialDate,
-      context: context,
-      firstDate: firstDate,
-      lastDate: lastDate,
-    );
-    if (pickerDate != null) {
-      // final dateWithTime = DateTime(
-      //   pickerDate.year,
-      //   pickerDate.month,
-      //   pickerDate.day,
-      //   now.hour,
-      //   now.minute,
-      //   now.second,
-      // );
-      setState(() {
-        _startDate = pickerDate;
+        _errorEndTime = false;
+        // 👉 Nếu thời gian không phải là 17:30 thì đổi sang Part Time
+        if (!(pickedTime.hour == 17 && pickedTime.minute == 30)) {
+          _leaveTimeType = 'Part Time';
+        }
       });
     }
   }
 
-  void _chooseDateEndPicker() async {
+  void _chooseDateStartPicker() async {
     final now = DateTime.now();
     final initialDate = DateTime.now();
-    final firstDate = DateTime(now.year);
+    final firstDate = DateTime(now.year, now.month, now.day); // Cắt bỏ giờ phút giây
     final lastDate = DateTime(now.year + 1);
     final pickerDate = await showDatePicker(
       initialDate: initialDate,
@@ -134,7 +242,123 @@ class _LeaveRequestScreenState extends ConsumerState<LeaveRequestScreen> {
         // now.hour,
         // now.minute,
         // now.second,
+
       );
+
+      // ⏰ Kiểm tra nếu ngày bắt đầu == ngày kết thúc và giờ bắt đầu ≥ giờ kết thúc
+      if (_endDate != null &&
+          _startTime != null &&
+          _endTime != null &&
+          pickerDate.isAtSameMomentAs(DateTime(_endDate!.year, _endDate!.month, _endDate!.day))) {
+        final startDateTime = DateTime(0, 0, 0, _startTime!.hour, _startTime!.minute);
+        final endDateTime = DateTime(0, 0, 0, _endTime!.hour, _endTime!.minute);
+
+        if (startDateTime.isAfter(endDateTime) || startDateTime.isAtSameMomentAs(endDateTime)) {
+          setState(() {
+            _textErrorDayStart = 'If the start time is greater than the end time, then the start date must be greater than the end date.';
+            _errorStartDate = true;
+          });
+
+          showTopNotification(
+            context: context,
+            message: 'If the start time is greater than the end time, then the start date must be greater than the end date.',
+            type: NotificationType.error,
+          );
+          return;
+        }
+      }else{
+        _errorStartDate = false;
+      }
+
+
+
+// Kiểm tra ko cho phép chọn ngày bắt đầu lớn hơn ngày kết thúc
+      if(_endDate != null && pickerDate.isAfter(_endDate!)){
+        // _showInvalidDateDialog('Start date cannot be after end date.');
+        setState(() {
+          _textErrorDayStart = 'Start date cannot be after end date';
+          _errorStartDate = true;
+
+        });
+        showTopNotification(context: context, message: 'Start date cannot be after end date', type: NotificationType.error);
+        return;
+      }else{
+        _errorStartDate = false;
+      }
+
+      setState(() {
+        _startDate = dateWithTime;
+      });
+    }
+  }
+
+  void _chooseDateEndPicker() async {
+    final now = DateTime.now();
+    final initialDate = DateTime.now();
+    final firstDate = DateTime(now.year, now.month, now.day); // Cắt bỏ giờ phút giây
+
+    final lastDate = DateTime(now.year + 1);
+    final pickerDate = await showDatePicker(
+      initialDate: initialDate,
+      context: context,
+      firstDate: firstDate,
+      lastDate: lastDate,
+    );
+    if (pickerDate != null) {
+      final dateWithTime = DateTime(
+        pickerDate.year,
+        pickerDate.month,
+        pickerDate.day,
+        // now.hour,
+        // now.minute,
+        // now.second,
+
+      );
+
+
+      // ❌ Nếu ngày bắt đầu == ngày kết thúc và giờ kết thúc ≤ giờ bắt đầu
+      if (_startDate != null &&
+          _startTime != null &&
+          _endTime != null &&
+          dateWithTime.isAtSameMomentAs(DateTime(_startDate!.year, _startDate!.month, _startDate!.day))) {
+        final startTimeDT = DateTime(0, 0, 0, _startTime!.hour, _startTime!.minute);
+        final endTimeDT = DateTime(0, 0, 0, _endTime!.hour, _endTime!.minute);
+        if (endTimeDT.isBefore(startTimeDT) || endTimeDT.isAtSameMomentAs(startTimeDT)) {
+          setState(() {
+            _textErrorDayEnd = 'If the start time is greater than the end time, then the end date must be greater than the start date.';
+            _errorEndDate = true;
+          });
+
+          showTopNotification(
+            context: context,
+            message: 'End time must be after start time when dates are the same',
+            type: NotificationType.error,
+          );
+          return;
+        }
+      }else{
+        setState(() {
+          _errorEndDate = false;
+        });
+      }
+
+
+
+
+
+      // Không cho phép ngày kết thúc nhỏ hơn ngày bắt đầu.
+      if(_startDate != null && dateWithTime.isBefore(_startDate!)){
+        setState(() {
+          _textErrorDayEnd = 'End date cannot be before start date';
+          _errorEndDate = true;
+        });
+        showTopNotification(context: context, message: 'End date cannot be before start date', type: NotificationType.error);
+        return;
+      }else{
+        setState(() {
+          _errorEndDate = false;
+        });
+      }
       setState(() {
         _endDate = dateWithTime;
       });
@@ -238,16 +462,35 @@ class _LeaveRequestScreenState extends ConsumerState<LeaveRequestScreen> {
       print('_endDate  - ${_endDate}');
       print('_reason  - ${_reason}');
 
-      await _leaveController.requestLeave(
-        context: context,
-        dateCreated: DateTime.now(),
-        leaveType: _leaveType!,
-        leaveTimeType: _leaveTimeType!,
-        startDate: _fullStartDateTime!,
-        endDate: _fullEndDateTime!,
-        reason: _reason,
-        userId: user!.id,
-      );
+
+      if(widget.leave == null){
+        // Truong hop them moi
+        await _leaveController.requestLeave(
+          context: context,
+          dateCreated: DateTime.now(),
+          leaveType: _leaveType!,
+          leaveTimeType: _leaveTimeType!,
+          startDate: _fullStartDateTime!,
+          endDate: _fullEndDateTime!,
+          reason: _reason,
+          userId: user!.id,
+        );
+      }else{
+        await _leaveController.updateLeave(
+          context: context,
+          dateCreated: DateTime.now(),
+          leaveType: _leaveType!,
+          leaveTimeType: _leaveTimeType!,
+          startDate: _fullStartDateTime!,
+          endDate: _fullEndDateTime!,
+          reason: _reason,
+          userId: user!.id,
+          id: widget.leave!.id
+        );
+        showTopNotification(context: context, message: 'You have successfully updated a leave request.', type: NotificationType.success);
+
+      }
+
       // ✅ Sau khi gửi xong, quay lại trang trước và trả về `true`
       if (context.mounted) {
         Navigator.pop(context, true);
@@ -262,7 +505,7 @@ class _LeaveRequestScreenState extends ConsumerState<LeaveRequestScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Leave Request'),
+        title: widget.leave == null ? const Text('Leave Request') :const Text('Update Leave Request'),
         centerTitle: true,
         backgroundColor: HelpersColors.primaryColor,
         foregroundColor: Colors.white,
@@ -285,13 +528,14 @@ class _LeaveRequestScreenState extends ConsumerState<LeaveRequestScreen> {
                         vertical: 3,
                       ),
                       decoration: BoxDecoration(
+                        color: HelpersColors.bgFillTextField,
                         border: Border.all(
                           color: _errorLeaveType
                               ? HelpersColors.itemSelected
-                              : HelpersColors.primaryColor,
+                              : HelpersColors.bgFillTextField,
                           width: 1,
                         ),
-                        borderRadius: BorderRadius.all(Radius.circular(15)),
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
                       ),
                       child: DropdownButton(
                         items: leaveType.map((e) {
@@ -329,13 +573,14 @@ class _LeaveRequestScreenState extends ConsumerState<LeaveRequestScreen> {
                         vertical: 3,
                       ),
                       decoration: BoxDecoration(
+                        color: HelpersColors.bgFillTextField,
                         border: Border.all(
                           color: _errorLeaveTimeType
                               ? HelpersColors.itemSelected
-                              : HelpersColors.primaryColor,
+                              : HelpersColors.bgFillTextField,
                           width: 1,
                         ),
-                        borderRadius: BorderRadius.all(Radius.circular(15)),
+                        borderRadius: BorderRadius.all(Radius.circular(10)),
                       ),
                       child: DropdownButton(
                         items: leaveTimeType.map((e) {
@@ -348,6 +593,9 @@ class _LeaveRequestScreenState extends ConsumerState<LeaveRequestScreen> {
                             if (_leaveTimeType == 'Full Time') {
                               _startTime = TimeOfDay(hour: 8, minute: 30); // 🕗 8:30 AM
                               _endTime = TimeOfDay(hour: 17, minute: 30);  // 🕔 5:30 PM
+
+                              _errorStartTime = false;
+                              _errorEndTime = false;
                             }
                             if (_leaveTimeType == 'Part Time') {
                               _startTime = null; // 🕗 8:30 AM
@@ -393,14 +641,15 @@ class _LeaveRequestScreenState extends ConsumerState<LeaveRequestScreen> {
                                     vertical: 15,
                                   ),
                                   decoration: BoxDecoration(
+                                    color: HelpersColors.bgFillTextField,
                                     border: Border.all(
                                       color: _errorStartTime
                                           ? HelpersColors.itemSelected
-                                          : HelpersColors.primaryColor,
+                                          : HelpersColors.bgFillTextField,
                                       width: 1,
                                     ),
                                     borderRadius: BorderRadius.all(
-                                      Radius.circular(15),
+                                      Radius.circular(10),
                                     ),
                                   ),
                                   child: Row(
@@ -409,7 +658,7 @@ class _LeaveRequestScreenState extends ConsumerState<LeaveRequestScreen> {
                                       SizedBox(width: 10),
                                       Text(
                                         _startTime == null
-                                            ? 'Choose start time'
+                                            ? 'Choose time'
                                             : _startTime!.format(context),
                                       ),
                                     ],
@@ -419,7 +668,7 @@ class _LeaveRequestScreenState extends ConsumerState<LeaveRequestScreen> {
                                   Align(
                                     alignment: AlignmentDirectional.topStart,
                                     child: Text(
-                                      'Time start is required',
+                                      _textErrorTimeStart,
                                       style: TextStyle(
                                         color: HelpersColors.itemSelected,
                                       ),
@@ -450,14 +699,15 @@ class _LeaveRequestScreenState extends ConsumerState<LeaveRequestScreen> {
                                     vertical: 15,
                                   ),
                                   decoration: BoxDecoration(
+                                    color: HelpersColors.bgFillTextField,
                                     border: Border.all(
                                       color: _errorStartDate
                                           ? HelpersColors.itemSelected
-                                          : HelpersColors.primaryColor,
+                                          : HelpersColors.bgFillTextField,
                                       width: 1,
                                     ),
                                     borderRadius: BorderRadius.all(
-                                      Radius.circular(15),
+                                      Radius.circular(10),
                                     ),
                                   ),
                                   child: Row(
@@ -466,7 +716,7 @@ class _LeaveRequestScreenState extends ConsumerState<LeaveRequestScreen> {
                                       SizedBox(width: 10),
                                       Text(
                                         _startDate == null
-                                            ? 'Choose day start'
+                                            ? 'Choose day'
                                             : FormatHelper.formatDate_DD_MM_YYYY(
                                           _startDate!,
                                               ),
@@ -478,7 +728,7 @@ class _LeaveRequestScreenState extends ConsumerState<LeaveRequestScreen> {
                                   Align(
                                     alignment: AlignmentDirectional.topStart,
                                     child: Text(
-                                      'Day start is required',
+                                      _textErrorDayStart,
                                       style: TextStyle(
                                         color: HelpersColors.itemSelected,
                                       ),
@@ -514,14 +764,15 @@ class _LeaveRequestScreenState extends ConsumerState<LeaveRequestScreen> {
                                     vertical: 15,
                                   ),
                                   decoration: BoxDecoration(
+                                    color: HelpersColors.bgFillTextField,
                                     border: Border.all(
                                       color: _errorEndTime
                                           ? HelpersColors.itemSelected
-                                          : HelpersColors.primaryColor,
+                                          : HelpersColors.bgFillTextField,
                                       width: 1,
                                     ),
                                     borderRadius: BorderRadius.all(
-                                      Radius.circular(15),
+                                      Radius.circular(10),
                                     ),
                                   ),
                                   child: Row(
@@ -530,7 +781,7 @@ class _LeaveRequestScreenState extends ConsumerState<LeaveRequestScreen> {
                                       SizedBox(width: 10),
                                       Text(
                                         _endTime == null
-                                            ? 'Choose end time'
+                                            ? 'Choose time'
                                             : _endTime!.format(context),
 
                                 ),
@@ -541,7 +792,7 @@ class _LeaveRequestScreenState extends ConsumerState<LeaveRequestScreen> {
                                   Align(
                                     alignment: AlignmentDirectional.topStart,
                                     child: Text(
-                                      'Time end is required',
+                                      _textErrorTimeEnd,
                                       style: TextStyle(
                                         color: HelpersColors.itemSelected,
                                       ),
@@ -572,14 +823,15 @@ class _LeaveRequestScreenState extends ConsumerState<LeaveRequestScreen> {
                                     vertical: 15,
                                   ),
                                   decoration: BoxDecoration(
+                                    color: HelpersColors.bgFillTextField,
                                     border: Border.all(
                                       color: _errorEndDate
                                           ? HelpersColors.itemSelected
-                                          : HelpersColors.primaryColor,
+                                          : HelpersColors.bgFillTextField,
                                       width: 1,
                                     ),
                                     borderRadius: BorderRadius.all(
-                                      Radius.circular(15),
+                                      Radius.circular(10),
                                     ),
                                   ),
                                   child: Row(
@@ -588,7 +840,7 @@ class _LeaveRequestScreenState extends ConsumerState<LeaveRequestScreen> {
                                       SizedBox(width: 10),
                                       Text(
                                         _endDate == null
-                                            ? 'Choose day end'
+                                            ? 'Choose day'
                                             : FormatHelper.formatDate_DD_MM_YYYY(
                                           _endDate!,
                                         ),
@@ -600,7 +852,7 @@ class _LeaveRequestScreenState extends ConsumerState<LeaveRequestScreen> {
                                   Align(
                                     alignment: AlignmentDirectional.topStart,
                                     child: Text(
-                                      'Day end is required',
+                                      _textErrorDayEnd,
                                       style: TextStyle(
                                         color: HelpersColors.itemSelected,
                                       ),
@@ -622,6 +874,7 @@ class _LeaveRequestScreenState extends ConsumerState<LeaveRequestScreen> {
                   onChanged: (value) {
                     _reason = value;
                   },
+                  initialValue:widget.leave != null ? widget.leave!.reason : '',
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Reason is required';
@@ -631,18 +884,18 @@ class _LeaveRequestScreenState extends ConsumerState<LeaveRequestScreen> {
                   },
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
+                      borderRadius: BorderRadius.circular(10),
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
+                      borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide(
-                        color: HelpersColors.primaryColor,
+                        color: HelpersColors.itemPrimary,
                       ),
                     ),
                     enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(15),
+                      borderRadius: BorderRadius.circular(10),
                       borderSide: BorderSide(
-                        color: HelpersColors.primaryColor,
+                        color: Colors.black26,
                         width: 1.0,
                       ),
                     ),
@@ -665,15 +918,15 @@ class _LeaveRequestScreenState extends ConsumerState<LeaveRequestScreen> {
                           HelpersColors.secondaryColor,
                         ],
                       ),
-                      borderRadius: BorderRadius.all(Radius.circular(15)),
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
                     ),
                     child: Row(
                       children: [
                         SizedBox(width: 50),
                         _isLoading
                             ? Center(child: CircularProgressIndicator())
-                            : Text(
-                                'Leave request',
+                            : Text( widget.leave == null ?
+                                'Leave request' : 'Update',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 18,
@@ -704,7 +957,7 @@ class _LeaveRequestScreenState extends ConsumerState<LeaveRequestScreen> {
       padding: EdgeInsets.only(bottom: 5),
       child: Text(
         title,
-        style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+        style: TextStyle(color: Colors.black,fontSize: 15,),
       ),
     );
   }

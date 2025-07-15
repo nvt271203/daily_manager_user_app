@@ -98,7 +98,7 @@ class DetailWorkScreen extends StatelessWidget {
             offset: const Offset(0, 3),
           ),
         ],
-        border: Border.all(color: mainColor.withOpacity(0.3)),
+        // border: Border.all(color: mainColor.withOpacity(0.3)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -116,7 +116,7 @@ class DetailWorkScreen extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: mainColor.withOpacity(0.1),
+                    color: mainColor.withOpacity(0.08),
                     borderRadius: BorderRadius.all(Radius.circular(10))
                   ),
                   child: Icon(icon, size: 20, color: mainColor),
@@ -138,9 +138,8 @@ class DetailWorkScreen extends StatelessWidget {
                       Text(
                         subtitle,
                         style: TextStyle(
-                          fontSize: 12,
+                          fontSize: 14,
                           color: HelpersColors.itemPrimary,
-                          fontStyle: FontStyle.italic
                         ),
                       ),
                     ],
@@ -184,9 +183,11 @@ class DetailWorkScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFEFF6FF),
+      // backgroundColor: const Color(0xFFEFF6FF),
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text('Work Day Details'),
+        centerTitle: true,
         backgroundColor: HelpersColors.primaryColor,
         foregroundColor: Colors.white,
       ),
@@ -244,19 +245,19 @@ class DetailWorkScreen extends StatelessWidget {
             _buildTextCard(
               icon: Icons.assignment_outlined,
               title: 'Report',
-              subtitle: 'Tasks and achievements from yesterday ?',
+              subtitle: 'Yesterday\'s tasks and results',
               content: work.report,
             ),
             _buildTextCard(
               icon: Icons.event_note,
               title: 'Plan',
-              subtitle: 'Planned goals and actions for today ?',
+              subtitle: 'Today\'s goals and plans',
               content: work.plan,
             ),
             _buildTextCard(
               icon: Icons.fact_check_outlined,
               title: 'Note',
-              subtitle: 'Additional notes or support needs ?',
+              subtitle: 'Notes and support needs',
               content: work.note,
             ),
           ],

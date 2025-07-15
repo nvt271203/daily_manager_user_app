@@ -18,6 +18,7 @@ class LeaveProvider extends StateNotifier<AsyncValue<List<Leave>>>{
       }
     }
   }
+
   /// Thêm một leave mới (ví dụ sau khi check-in hoặc thêm thủ công)
   void addLeave(Leave newLeave) {
     if (state is AsyncData) {
